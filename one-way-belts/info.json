@@ -1,0 +1,9 @@
+{
+    "name": "one-way-belts",
+    "version": "0.0.1",
+    "factorio_version": "0.16",
+    "title": "One-Way Belts",
+    "author": "Eric Stansifer",
+    "description": "Belts (and inserters) can only be placed facing north or east",
+    "dependencies": ["base"]
+}

@@ -1,0 +1,9 @@
+{
+    "name": "rainbow-player-color",
+    "version": "0.0.2",
+    "factorio_version": "0.16",
+    "title": "Rainbow Player Color",
+    "author": "Eric Stansifer",
+    "description": "Player colors slowly change through all colors of rainbow",
+    "dependencies": ["base"]
+}
