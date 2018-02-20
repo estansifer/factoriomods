@@ -13,41 +13,41 @@ local function valid_rotations(item)
     end
 end
 
-local d = {
-        defines.direction.north     = 1,
-        defines.direction.east      = 2,
-        defines.direction.south     = 3,
-        defines.direction.west      = 3,
-    }
+local db = ({
+        [defines.direction.north]   = 1,
+        [defines.direction.east]    = 2,
+        [defines.direction.south]   = 3,
+        [defines.direction.west]    = 4
+    })
+local di = ({
+        [defines.direction.north]   = 3,
+        [defines.direction.east]    = 4,
+        [defines.direction.south]   = 1,
+        [defines.direction.west]    = 2
+    })
 
 -- item can be 'belt' or 'inserter'
 local function fix(item, entity)
     local r = valid_rotations(item)
-    while not r[d[entity.direction]] do
-        print('Rotating... ')
-        print(entity.rotate())
+    if item == "inserter" then
+        while not r[di[entity.direction]] do
+            entity.rotate()
+        end
+    else
+        while not r[db[entity.direction]] do
+            entity.rotate()
+        end
     end
 end
 
 local function check(entity)
     local proto = entity.prototype
-    if proto.belt_speed > 0 then
+    if proto.belt_speed ~= nil then
         fix('belt', entity)
     else
-        print("proto.type")
-        print(proto.type)
-        print("proto.name")
-        print(proto.name)
-        local group = proto.group
-        print("group.type")
-        print(group.type)
-        print("group.name")
-        print(group.name)
-        group = proto.subgroup
-        print("subgroup.type")
-        print(subgroup.type)
-        print("subgroup.name")
-        print(subgroup.name)
+        if proto.type == "inserter" then
+            fix('inserter', entity)
+        end
     end
 end
 
@@ -71,4 +71,4 @@ end
 
 script.on_event(defines.events.on_built_entity, create_entity)
 script.on_event(defines.events.on_robot_built_entity, create_entity)
-script.on_event(defines.events.on_player_rotate_entity, rotate_entity)
+script.on_event(defines.events.on_player_rotated_entity, rotate_entity)
