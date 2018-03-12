@@ -1,0 +1,9 @@
+{
+    "name": "bug-fix-hand-stats",
+    "version": "0.0.1",
+    "factorio_version": "0.16",
+    "title": "Bug fix: hand crafting production statistics",
+    "author": "Eric Stansifer",
+    "description": "Production screen now correctly accounts for hand crafting.",
+    "dependencies": ["base"]
+}
