@@ -1,0 +1,9 @@
+{
+    "name": "ctg",
+    "version": "0.2.0",
+    "factorio_version": "0.16",
+    "title": "Custom Terrain Generation",
+    "author": "Eric Stansifer",
+    "description": "Changes how land and water are generated. Highly customizable.",
+    "dependencies": ["base"]
+}
