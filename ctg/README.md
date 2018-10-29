@@ -1,4 +1,4 @@
-# Custom Terrain Generator
+# Custom Terrain Generation
 
 a [Factorio](http://factorio.com) mod by Eric Stansifer
 
@@ -241,8 +241,6 @@ Optional parameters have their default values indicated.
 
 ## Unimportant Notes
 
- * Previous versions of this mod used deep magic to preserve settings across saves and in
- multiplayer. As of Factorio 0.15, this is no longer necessary, and this mod uses ordinary magic.
  * A lot of math, algorithms, and data structures went into this mod. This includes:
  numbers in base Fibonacci, the Burr distribution, the Dagum distribution, queues,
  priority queues, union-find algorithm, the Mandelbrot set, Perlin noise,
@@ -259,7 +257,8 @@ Optional parameters have their default values indicated.
     * Rewrote all core code
     * Now uses Factorio's built-in mod settings support
     * Settings include a variety of suggested patterns, and ability to make custom patterns.
-    * Got rid of deep magic for storing mod settings on per-save basis. Now using ordinary magic.
+    * Got rid of deep magic for storing mod settings on per-save basis. As of Factorio 0.15,
+    this was no longer necessary: now using ordinary magic.
     * Support for voids
     * Now warns if mod added after beginning of game
     * Added option to start the game with a chest of landfill
