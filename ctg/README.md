@@ -20,7 +20,8 @@ to combine them in many ways or write your own algorithm.
  when the game is first begun matter, and there is no need to synchronize settings for
  multiplayer.
  * If you enable this mod and then load a save that did not originally have this mod
- enabled, the mod will print a warning message and then do nothing.
+ enabled, the mod will do nothing and no water will be generated any more. A warning will
+ be printed.
  * It is hard to thoroughly test the accuracy of the many possible settings, especially
  for saving / loading, so please let me know if you encounter any bugs so I can fix
  them as quickly as possible.
@@ -252,6 +253,7 @@ Optional parameters have their default values indicated.
 
 ## Versions
 
+ * 0.2.1 Fixed bug in Maze3 / RandGrid; fixed misleading statement in README and warning message.
  * 0.2.0 Many changes:
     * Updated for Factorio 0.16 (skipping 0.15)
     * Rewrote all core code

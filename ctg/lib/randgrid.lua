@@ -10,6 +10,8 @@ function RandGrid()
         data.xr = {}
         data.yr = {}
         data.yk = {}
+
+        return data
     end
 
     local function reload(d)

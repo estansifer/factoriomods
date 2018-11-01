@@ -108,8 +108,8 @@ local function on_init(event)
     global.enabled = true
 
     if game.tick > 1 or global.settings ~= nil then
-        warn("Mod should be turned on when the game was first started. As a precaution " ..
-            "against unexpected behavior, the mod will be disabled in this save from now on.")
+        warn("This mod should not be enabled when loading a save that did not initially use " ..
+            "use it. No more water will be generated on this map.")
         global.enabled = false
     end
     global.settings = read_settings()
