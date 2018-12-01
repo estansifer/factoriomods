@@ -180,6 +180,7 @@ function Fractal(dimension, width, aspect)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end

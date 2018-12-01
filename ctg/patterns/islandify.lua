@@ -34,7 +34,8 @@ function KroneckerProduct(p1, p2, sizex, sizey)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end
 
@@ -97,7 +98,8 @@ function Islandify(p1, p2, sizex, sizey, bridgelength, bridgewidth)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end
 

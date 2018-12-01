@@ -94,6 +94,7 @@ function Maze3(t, v)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end

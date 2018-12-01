@@ -35,7 +35,6 @@ local function make_chunk(event)
         return
     end
 
-
     local surface = event.surface
     if surface.name ~= "nauvis" then
         -- "nauvis" change from EldVarg, to make it compatible with Factorissimo
@@ -95,9 +94,9 @@ local function create_landfill(event)
 end
 
 local function on_load(event)
-    if global.enabled then
+    if global.enabled and settings.startup['ctg-enable'].value then
         force_initial_water = global.settings['force-initial-water']
-        local tp = evaluate_patterns(global.settings)
+        local tp = evaluate_pattern(global.settings)
         tp.reload(global.tp_data)
         get_tile = tp.get
         script.on_event(defines.events.on_chunk_generated, make_chunk)
@@ -105,22 +104,25 @@ local function on_load(event)
 end
 
 local function on_init(event)
-    global.enabled = true
+    global.enabled = settings.startup['ctg-enable'].value
+    if not global.enabled then
+        return
+    end
 
-    if game.tick > 1 or global.settings ~= nil then
-        warn("This mod should not be enabled when loading a save that did not initially use " ..
-            "use it. No more water will be generated on this map.")
+    if (game.tick > 1 or global.settings ~= nil) then
+        if settings.startup['ctg-remove-default-water'].value then
+            warn("This mod should not be enabled when loading a save that did not initially use " ..
+                "use it. No more water will be generated on this map!")
+        else
+            warn("This mod should not be enabled when loading a save that did not initially use it.")
+        end
         global.enabled = false
     end
     global.settings = read_settings()
 
-    if not (global.settings['water-enable'] or global.settings['void-enable']) then
-        global.enabled = false
-    end
-
     if global.enabled then
         force_initial_water = global.settings['force-initial-water']
-        local tp = evaluate_patterns(global.settings)
+        local tp = evaluate_pattern(global.settings)
         global.tp_data = tp.create()
         get_tile = tp.get
         script.on_event(defines.events.on_chunk_generated, make_chunk)

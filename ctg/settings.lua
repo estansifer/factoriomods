@@ -20,6 +20,23 @@ for i, setting in ipairs(meta.settings) do
     data:extend{s}
 end
 
+data:extend{
+    {
+        type                = 'bool-setting',
+        name                = 'ctg-enable',
+        setting_type        = 'startup',
+        default_value       = true,
+        order               = 'ctg-s000'
+    },
+    {
+        type                = 'bool-setting',
+        name                = 'ctg-remove-default-water',
+        setting_type        = 'startup',
+        default_value       = true,
+        order               = 'ctg-s001'
+    }
+}
+
 --[[
 data:extend{
         {

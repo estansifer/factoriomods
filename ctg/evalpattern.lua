@@ -1,10 +1,5 @@
 require("patterns/patterns")
 
-v4 = nil
-v3 = nil
-v2 = nil
-v1 = nil
-
 local function eval(str)
     if false then -- string.find(str, "return", 1, true) ~= nil then
         return assert(load(str))()
@@ -13,58 +8,62 @@ local function eval(str)
     end
 end
 
-local function evaluate_pattern(preset, custom, p_v1, p_v2, p_v3, p_v4)
-    v4 = nil
-    v3 = nil
-    v2 = nil
-    v1 = nil
-    if preset ~= nil then
-        return eval(preset)
-    else
-        v4 = eval(p_v4)
-        v3 = eval(p_v3)
-        v2 = eval(p_v2)
-        v1 = eval(p_v1)
-        return eval(custom)
+-- 'pattern' is a string containing Lua code.
+-- 'vars' is a list of pairs (name, code) where name and code are strings,
+-- and name contains a Lua variable, and code contains Lua code.
+-- Each variable in vars can refer to the later variables, and pattern can refer to any of them.
+-- 'vars' can be nil.
+local function evaluate_pattern_with_context(pattern, vars)
+    if vars == nil then
+        return eval(pattern)
     end
+
+    local env = {}
+    setmetatable(env, {__index = _G})
+    for i = 1, #vars do
+        local item = vars[#vars - i + 1]
+        local var_name = item[1]
+        local var_value = eval(item[2], item[2], "t", env)
+        env[var_name] = var_value
+    end
+
+    return eval(pattern, pattern, "t", env)
 end
 
-function evaluate_patterns(s)
+function evaluate_pattern(s)
     if not global.enabled then
-        warn("Internal error; mod is disabled during evaluate_patterns")
+        warn("Internal error; mod is disabled during evaluate_pattern")
         return
     end
 
     local land_pattern, void_pattern, water_tile, deepwater_tile, void_tile
 
-    if s['water-color'] == "blue" then
-        water_tile = 'water'
-        deepwater_tile = 'deepwater'
-    elseif s['water-color'] == "green" then
-        water_tile = 'water-green'
-        deepwater_tile = 'deepwater-green'
-    end
-    local void_tile = 'out-of-map'
+    local vars = {
+            {"v1", s['pattern-v1']},
+            {"v2", s['pattern-v2']},
+            {"v3", s['pattern-v3']},
+            {"v4", s['pattern-v4']},
+            {"v5", s['pattern-v5']},
+            {"v6", s['pattern-v6']},
+            {"v7", s['pattern-v7']},
+            {"v8", s['pattern-v8']}
+        }
 
-    if s['water-enable'] then
-        land_pattern = evaluate_pattern(
-            water_preset_by_name(s['water-pattern-preset']),
-            s['water-pattern-custom'],
-            s['water-pattern-custom-v1'],
-            s['water-pattern-custom-v2'],
-            s['water-pattern-custom-v3'],
-            s['water-pattern-custom-v4'])
-    end
-
-    if s['void-enable'] then
-        void_pattern = evaluate_pattern(
-            void_preset_by_name(s['void-pattern-preset']),
-            s['void-pattern-custom'],
-            s['void-pattern-custom-v1'],
-            s['void-pattern-custom-v2'],
-            s['void-pattern-custom-v3'],
-            s['void-pattern-custom-v4'])
+    local preset = preset_by_name(s['pattern-preset'])
+    local pattern
+    if preset == nil then
+        pattern = evaluate_pattern_with_context(s['pattern-custom'], vars)
+    else
+        pattern = evaluate_pattern_with_context(preset)
     end
 
-    return TerrainPattern(land_pattern, void_pattern, water_tile, deepwater_tile, void_tile)
+    if pattern.output == "tilename" then
+        return pattern
+    elseif pattern.output == "bool" then
+        return TP(pattern, nil, nil)
+    elseif pattern.output == "tileid" then
+        return TileID2Name(pattern, nil)
+    else
+        return nil
+    end
 end

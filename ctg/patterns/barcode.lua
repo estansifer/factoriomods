@@ -108,7 +108,8 @@ function Barcode(angle, landthickness, waterthickness)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end
 
@@ -193,6 +194,7 @@ function ConcentricBarcode(landthickness, waterthickness)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end

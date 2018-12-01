@@ -2,26 +2,31 @@ meta = {
     water_colors    = {"blue", "green"},
     setting_type    = "runtime-global",
     -- List of pairs of name of preset and code to generate preset
-    water_pattern_presets = {
-            {"spiral", "Spiral(1.3, 0.4)"},
+    pattern_presets = {
+            {"spiral", "Union(Spiral(1.3, 0.4), Rectangle(-105, -2, 115, 2))"},
             {"arithmetic spiral", "ArithmeticSpiral(50, 0.4)"},
             {"rectilinear spiral", "Zoom(RectSpiral(), 50)"},
             {"triple spiral", "AngularRepeat(Spiral(1.6, 0.5), 3)"},
             {"crossing spirals", "Union(Spiral(1.4, 0.4), Spiral(1 / 1.6, 0.2))"},
             {"natural archipelago",
-                "NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.13})"},
+                -- "NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.13})"},
+                "Union(" ..
+                "NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.07})," ..
+                "NoiseCustom({exponent=1.9,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.1," ..
+                "start_on_land=false,start_on_beach=false}))"},
             {"natural big islands",
                 "NoiseCustom({exponent=2.3,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.2})"},
             {"natural continents",
                 "NoiseCustom({exponent=2.4,noise={1,1,1,1,1,1,1,0.6,0.3,0.2},land_percent=0.35})"},
             {"natural half land",
-                "NoiseCustom({exponent=2,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.5})"},
+                "NoiseCustom({exponent=2,noise={0.5,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.5})"},
             {"natural big lakes",
-                "NoiseCustom({exponent=2.3,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.65})"},
+                "NoiseCustom({exponent=2.3,noise={0.5,0.8,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.65})"},
             {"natural medium lakes",
-                "NoiseCustom({exponent=2.1,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.86})"},
+                "NoiseCustom({exponent=2.1,noise={0.3,0.6,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.86})"},
             {"natural small lakes",
-                "NoiseCustom({exponent=1.8,noise={0.2,0.3,0.4,0.6,1,1,0.7,0.4,0.3,0.2},land_percent=0.96})"},
+                -- "NoiseCustom({exponent=1.8,noise={0.2,0.3,0.4,0.6,1,1,0.7,0.4,0.3,0.2},land_percent=0.96})"},
+                "NoiseCustom({exponent=1.5,noise={0.05,0.1,0.4,0.7,1,0.7,0.3,0.1},land_percent=0.92})"},
             {"pink noise (good luck...)", "NoiseExponent({exponent=1,land_percent = 0.35})"},
             {"radioactive", "Union(AngularRepeat(Halfplane(), 3), Circle(38))"},
             {"comb", "Zoom(Comb(), 50)"},
@@ -42,25 +47,16 @@ meta = {
             {"pink noise maze",
                 "Intersection(Zoom(Maze2(), 50), NoiseExponent{exponent=1,land_percent=0.8})"},
             {"custom", nil}
-    },
-    void_pattern_presets = {
-            {"tiny pot holes", "Maze3(0.997)"},
-            {"small pot holes", "Zoom(Maze3(0.994), 3)"},
-            {"custom", nil}
     }
+    -- void_pattern_presets = {
+            -- {"tiny pot holes", "Maze3(0.997)"},
+            -- {"small pot holes", "Zoom(Maze3(0.994), 3)"},
+            -- {"custom", nil}
+    -- }
 }
 
-function water_preset_by_name(name)
-    for _, item in ipairs(meta.water_pattern_presets) do
-        if item[1] == name then
-            return item[2]
-        end
-    end
-    return nil
-end
-
-function void_preset_by_name(name)
-    for _, item in ipairs(meta.void_pattern_presets) do
+function preset_by_name(name)
+    for _, item in ipairs(meta.pattern_presets) do
         if item[1] == name then
             return item[2]
         end
@@ -82,8 +78,12 @@ end
 local function mk_str(name, def)
     return {name, "string", def}
 end
-local function mk_dropdown(name, opts)
-    return {name, "string", opts[1], opts}
+local function mk_dropdown(name, opts, default)
+    if default == nil then
+        return {name, "string", opts[1], opts}
+    else
+        return {name, "string", default, opts}
+    end
 end
 local function mk_int(name, def, range)
     if range == nil then
@@ -94,25 +94,20 @@ local function mk_int(name, def, range)
 end
 
 meta.settings = {
-    -- mk_int("initial-landfill", 0, {0, 4800}),
-    mk_bool("initial-landfill", false),
-    mk_bool("water-enable", true),
     mk_dropdown("water-color", meta.water_colors),
-    mk_dropdown("water-pattern-preset", map_first(meta.water_pattern_presets)),
-    mk_str("water-pattern-custom", "(lua code goes here)"),
-    mk_str("water-pattern-custom-v1", "nil"),
-    mk_str("water-pattern-custom-v2", "nil"),
-    mk_str("water-pattern-custom-v3", "nil"),
-    mk_str("water-pattern-custom-v4", "nil"),
+    mk_dropdown("pattern-preset", map_first(meta.pattern_presets), "maze 2 (DLA)"),
+    mk_str("pattern-custom", "(lua code goes here)"),
 
-    mk_bool("void-enable", false),
-    mk_dropdown("void-pattern-preset", map_first(meta.void_pattern_presets)),
-    mk_str("void-pattern-custom", "(lua code goes here)"),
-    mk_str("void-pattern-custom-v1", "nil"),
-    mk_str("void-pattern-custom-v2", "nil"),
-    mk_str("void-pattern-custom-v3", "nil"),
-    mk_str("void-pattern-custom-v4", "nil"),
+    mk_str("pattern-v1", "nil"),
+    mk_str("pattern-v2", "nil"),
+    mk_str("pattern-v3", "nil"),
+    mk_str("pattern-v4", "nil"),
+    mk_str("pattern-v5", "nil"),
+    mk_str("pattern-v6", "nil"),
+    mk_str("pattern-v7", "nil"),
+    mk_str("pattern-v8", "nil"),
 
+    mk_bool("initial-landfill", false),
     mk_bool("force-initial-water", false),
     mk_bool("big-scan", false),
     mk_bool("screenshot", false),

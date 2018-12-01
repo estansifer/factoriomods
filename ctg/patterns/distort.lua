@@ -85,6 +85,7 @@ function Distort(pattern, distortion_map, wavelengths)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = pattern.output
     }
 end

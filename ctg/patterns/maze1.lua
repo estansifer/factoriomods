@@ -231,6 +231,7 @@ function Maze1()
     return {
             create = create,
             reload = reload,
-            get = get
+            get = get,
+            output = "bool"
         }
 end

@@ -17,7 +17,7 @@ function Zoom(pattern, f)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        continuous = pattern.continuous, get = get}
+        get = get, output = pattern.output}
 end
 
 function Tighten(pattern)
@@ -26,7 +26,7 @@ function Tighten(pattern)
     local function get(x, y)
         return pget(x, y) and pget(x + 1, y) and pget(x, y + 1) and pget(x + 1, y + 1)
     end
-    return {create = pattern.create, reload = pattern.reload, get = get}
+    return {create = pattern.create, reload = pattern.reload, get = get, output = "bool"}
 end
 
 function FullTighten(pattern)
@@ -35,27 +35,20 @@ function FullTighten(pattern)
     local function get(x, y)
         return pget(x, y) and pget(x + 1, y) and pget(x - 1, y) and pget(x, y + 1) and pget(x, y - 1)
     end
-    return {create = pattern.create, reload = pattern.reload, get = get}
+    return {create = pattern.create, reload = pattern.reload, get = get, output = "bool"}
 end
 
--- Accepts continuous or discrete pattern
 function Not(pattern)
     local pget = pattern.get
 
-    if pattern.continuous then
-        local function get(x, y)
-            return not pget(x, y)
-        end
-        return {create = pattern.create, reload = pattern.reload, get = get}
-    else
-        local function get(x, y)
-            return -pget(x, y)
-        end
-        return {create = pattern.create, reload = pattern.reload, get = get, continuous = true}
+    local function get(x, y)
+        return not pget(x, y)
     end
+    return {create = pattern.create, reload = pattern.reload, get = get, output = "bool"}
 end
 
--- Takes any number of patterns. They must be discrete.
+-- Takes any number of patterns. Either all patterns must output "bool", or "float". If no patterns
+-- are given, "bool" is assumed. For float, takes maximum.
 function Union(...)
     local n = select('#', ...)
     local patterns = {...}
@@ -79,19 +72,31 @@ function Union(...)
         end
     end
 
-    local function get(x, y)
-        for _, p in ipairs(patterns) do
-            if p.get(x, y) then
-                return true
+    local get
+
+    if patterns[1].output == "bool" then
+        get = function(x, y)
+            for _, p in ipairs(patterns) do
+                if p.get(x, y) then
+                    return true
+                end
             end
+            return false
         end
-        return false
+    else
+        get = function(x, y)
+            local m = -999999
+            for _, p in ipairs(patterns) do
+                m = math.max(m, p.get(x, y))
+            end
+            return m
+        end
     end
 
-    return {create = create, reload = reload, get = get}
+    return {create = create, reload = reload, get = get, output = patterns[1].output}
 end
 
--- Takes any number of patterns. They must be discrete.
+-- See Union. For "float", takes the minimum.
 function Intersection(...)
     local n = select('#', ...)
     local patterns = {...}
@@ -115,56 +120,29 @@ function Intersection(...)
         end
     end
 
-    local function get(x, y)
-        for _, p in ipairs(patterns) do
-            if not p.get(x, y) then
-                return false
+    local get
+
+    if patterns[1].output == "bool" then
+        get = function(x, y)
+            for _, p in ipairs(patterns) do
+                if not p.get(x, y) then
+                    return false
+                end
             end
+            return true
         end
-        return true
+    else
+        get = function(x, y)
+            local m = 999999
+            for _, p in ipairs(patterns) do
+                m = math.min(m, p.get(x, y))
+            end
+            return m
+        end
     end
 
-    return {create = create, reload = reload, get = get}
+    return {create = create, reload = reload, get = get, output = patterns[1].output}
 end
-
--- Takes any number of patterns. They must be continuous.
-function Max(...)
-    local n = select('#', ...)
-    local patterns = {...}
-    if n == 0 then
-        local function get(x, y)
-            return -1
-        end
-        return {create = noop, reload = noop, get = get, continuous = true}
-    elseif n == 1 then
-        return patterns[1]
-    end
-
-    local function create()
-        local d = {}
-        for i, p in ipairs(patterns) do
-            d[i] = p.create()
-        end
-        return d
-    end
-
-    local function reload(d)
-        for i, p in ipairs(patterns) do
-            p.reload(d[i])
-        end
-    end
-
-    local function get(x, y)
-        local m = -999999
-        for _, p in ipairs(patterns) do
-            m = math.max(m, p.get(x, y))
-        end
-        return m
-    end
-
-    return {create = create, reload = reload, get = get, continuous = true}
-end
-
 
 -- Shifts the given pattern by dx to the right and dy up
 function Translate(pattern, dx, dy)
@@ -175,7 +153,7 @@ function Translate(pattern, dx, dy)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        continuous = pattern.continuous, get = get}
+        get = get, output = pattern.output}
 end
 
 -- Given an angle in degrees, rotates anticlockwise by that much
@@ -189,7 +167,7 @@ function Rotate(pattern, angle)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        get = get, continuous = pattern.continuous}
+        get = get, output = pattern.output}
 end
 
 function Affine(pattern, a, b, c, d, dx, dy)
@@ -202,7 +180,7 @@ function Affine(pattern, a, b, c, d, dx, dy)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        get = get, continuous = pattern.continuous}
+        get = get, output = pattern.output}
 end
 
 -- Tiles the plane with the contents of the given pattern from [xlow, xhigh) x [ylow, yhigh)
@@ -218,7 +196,7 @@ function Tile(pattern, xhigh, yhigh, xlow, ylow)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        get = get, continuous = pattern.continuous}
+        get = get, output = pattern.output}
 end
 
 function Tilex(pattern, xhigh, xlow)
@@ -231,7 +209,7 @@ function Tilex(pattern, xhigh, xlow)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        get = get, continuous = pattern.continuous}
+        get = get, output = pattern.output}
 end
 
 function Tiley(pattern, yhigh, ylow)
@@ -244,7 +222,7 @@ function Tiley(pattern, yhigh, ylow)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        get = get, continuous = pattern.continuous}
+        get = get, output = pattern.output}
 end
 
 -- Similar to the z -> z^k function, repeats the given pattern k times by squeezing
@@ -267,7 +245,7 @@ function AngularRepeat(pattern, k)
     end
 
     return {create = pattern.create, reload = pattern.reload,
-        get = get, continuous = pattern.continuous}
+        get = get, output = pattern.output}
 end
 
 -- Adds jitter to the boundaries of the given pattern; radius controls the size of the
@@ -307,11 +285,10 @@ function Jitter(pattern, radius)
         return geti(math.floor(x + 0.5), math.floor(y + 0.5))
     end
 
-    return {create = create, reload = reload, get = get, continuous = pattern.continuous}
+    return {create = create, reload = reload, get = get, output = pattern.output}
 end
 
 -- Poor performance, don't use
--- pattern should not be continuous
 function SmoothDiscrete(pattern, radius)
     local pget = pattern.get
     local r = radius or 3
@@ -365,5 +342,5 @@ function SmoothDiscrete(pattern, radius)
         return geti(math.floor(x + 0.5), math.floor(y + 0.5))
     end
 
-    return {create = create, reload = reload, get = get}
+    return {create = create, reload = reload, get = get, output = "bool"}
 end

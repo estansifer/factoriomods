@@ -21,13 +21,29 @@ function water_autoplace_settings(from_depth, rectangles)
   return { peaks = ret }
 end
 
-local t = data.raw.tile
-local nowater = water_autoplace_settings(10000)
 
-t.water.autoplace = nowater
-t.deepwater.autoplace = nowater
-t['water-green'].autoplace = nowater
-t['deepwater-green'].autoplace = nowater
+if settings.startup['ctg-enable'].value and settings.startup['ctg-remove-default-water'].value then
+    local t = data.raw.tile
+    local nowater = {
+            peaks = {
+                {
+                    influence               = 1000,
+                    elevation_optimal       = -15000,
+                    elevation_range         = 1,
+                    elevation_max_range     = 1
+                },
+                {
+                    influence               = 1
+                }
+            }
+        }
+    -- local nowater = water_autoplace_settings(10000)
+
+    t.water.autoplace = nowater
+    t.deepwater.autoplace = nowater
+    t['water-green'].autoplace = nowater
+    t['deepwater-green'].autoplace = nowater
+end
 
 local function brighten1(x)
     if x >= 0 and x < 1 then

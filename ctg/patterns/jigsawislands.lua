@@ -128,6 +128,7 @@ function JigsawIslands(landratio)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end

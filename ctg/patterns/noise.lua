@@ -425,7 +425,8 @@ function Noise(options)
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = "bool"
     }
 end
 
@@ -445,6 +446,9 @@ function NoiseExponent(options)
     return Noise(options)
 end
 
+-- The "noise" array gives a relative amplitude for noise of various frequencies,
+-- with the first element corresponding to a wavelength of sqrt(10), and each
+-- successive element corresponding to a wavelength sqrt(10) times larger.
 function NoiseCustom(options)
     if options == nil then
         options = {}

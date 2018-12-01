@@ -10,13 +10,13 @@ land, water, and void cells at the start of a new game.
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.2.0
+ * Version 0.3.0
  * Initial release: 2016-03-15
- * Current release: 2018-10-28
+ * Current release: 2018-12-01
 
 ## Important notes
 
- * This mod remembers all settings on a per-save basis. Only the settings enabled
+ * This mod remembers all runtime settings on a per-save basis. Only the settings enabled
  when the game is first begun matter, and there is no need to synchronize settings for
  multiplayer.
  * If you enable this mod and then load a save that did not originally have this mod
@@ -40,16 +40,13 @@ to combine them in many ways or write your own algorithm.
 
 ## How to use
 
-By default, the mod creates a simple spiral map. The `Water pattern preset` option
-gives a large list of other patterns that have been given as examples. Screenshots of
-each of these can be found above.
+By default, the mod creates a maze. The `Water pattern preset` option gives a large list
+of other patterns that have been given as examples. Screenshots of each of these can be
+found above.
 
  * You may wish to enable the "landfill chest" option which gives you a very large amount
  of landfill at the beginning. If you spawn near a good location but are blocked by water,
  you can use it to get there, and then throw away what you didn't need.
- * Any pattern that can be used for water and be used for void, but it generates voids
- instead of water (however, only a few void presets are given). If voids and water overlap,
- void takes priority.
  * All of the presets are designed to place water near the starting location, but you may
  wish to use a custom pattern that does not. In this case, the `Force starting water` option
  puts a puddle next to your starting location to make the game playable.
@@ -67,11 +64,29 @@ each of these can be found above.
  5. If you plan on investing a lot of time on a random map, you may wish to do this to make sure
  your map is reasonable before you begin the game.
 
+## Void cells
+
+Void cells are black squares that are impassable and cannot be landfilled. To generate void cells,
+use the `custom` option as described in the next section, and use the pattern
+
+    TP(waterpattern, voidpattern)
+
+where waterpattern is a pattern that specifies water placement, and voidpattern is a pattern that
+specifies void placement. (`TP` stands for `terrain pattern`.) Any pattern that can be used for
+water can be used for void, and vice versa. If water and void coincide, void will be placed.
+
+If you would like this mod to generate void cells, but generate water through Factorio's built-in
+water generation settings, then use the pattern
+
+    TP(nil, voidpattern)
+
+and uncheck the option "remove default water" in the startup settings.
+
 ## Custom patterns
 
 If you don't want to use a preset, you can specify the `custom` option and write your
-own pattern. If your pattern uses more than one line of lua code, you use variables called
-`v1`, `v2`, `v3`, and `v4` for convenience (since the text box is tiny to type in).
+own pattern. If your terrain pattern uses more than one line of lua code, you use variables called
+`v1` through `v8` for convenience (since the text box is tiny to type in).
 
 ### Examples
 
@@ -167,6 +182,7 @@ Optional parameters have their default values indicated.
     * Noise(options) -- `power` is mandatory option
     * NoiseExponent(options)
     * NoiseCustom(options)
+    * TP(waterpattern = nil, voidpattern = nil, watercolor = nil)
 
 ### Further notes on certain patterns
 
@@ -239,6 +255,10 @@ Optional parameters have their default values indicated.
     within a factor of 3 or so of each other for reasonable results.
     Default: {1, 1, 1, 1, 1, 1, 0.7, 0.4, 0.3, 0.2}
     The default array causes very large size features to be de-emphasized slightly.
+ * See the section on void cells for the usage of TP (`terrain pattern`). `waterpattern` describes
+ the placement of water (or nil to generate no water), and `voidpattern` describes the placement
+ of void (or nil to generate no water). `watercolor` can be blue, green, or nil; if nil, the mod
+ setting for water color is used. Where water and void coincide, void takes precedent.
 
 ## Unimportant Notes
 
@@ -253,7 +273,15 @@ Optional parameters have their default values indicated.
 
 ## Versions
 
+ * 0.3.0 Changes:
+    * Simplified the mod settings so that water and void generation are combined into one setting.
+    This makes setting up a map with no void slightly more streamlined, and also allows for the
+    possibility of patterns that entagle the generation of water and void.
+    * Tweaked some of the suggested preset maps, particularly the "natural" maps
+    * Added the option to preserve Factorio's normal water generation, say for use with void maps.
+    * Added internal support for future planned features
  * 0.2.1 Fixed bug in Maze3 / RandGrid; fixed misleading statement in README and warning message.
+    Thanks Kent2007 for reporting the bug.
  * 0.2.0 Many changes:
     * Updated for Factorio 0.16 (skipping 0.15)
     * Rewrote all core code
