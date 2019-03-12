@@ -5,7 +5,7 @@ local height = 900
 
 local function write(data, zoom)
     game.write_file(outfile, tostring(width) .. ' ' .. tostring(height) .. ' '
-        .. tostring(zoom) .. ' ' .. global.settings['water-pattern-preset'] .. '\n', true)
+        .. tostring(zoom) .. ' ' .. global.settings['pattern-preset'] .. '\n', true)
     local stuff = {}
     for row = 1, height do
         for col = 1, width do

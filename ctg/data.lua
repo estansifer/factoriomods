@@ -1,44 +1,12 @@
--- Copied from data/base/prototypes/tile/tiles.lua
-function water_autoplace_settings(from_depth, rectangles)
-  local ret =
-  {
-    {
-      -- Water and deep water have absolute priority. We simulate this by giving
-      -- them absurdly large influence
-      influence = 1e3 + from_depth,
-      elevation_optimal = -5000 - from_depth,
-      elevation_range = 5000,
-      elevation_max_range = 5000, -- everywhere below elevation 0 and nowhere else
-    }
-  }
-
-  if rectangles == nil then
-    ret[2] = { influence = 1 }
-  end
-
-  -- autoplace_utils.peaks(rectangles, ret)
-
-  return { peaks = ret }
-end
-
+local noise = require("noise") -- From the core mod
 
 if settings.startup['ctg-enable'].value and settings.startup['ctg-remove-default-water'].value then
-    local t = data.raw.tile
+    -- Note sure what probability_expression does. Setting it to zero does not turn off water.
     local nowater = {
-            peaks = {
-                {
-                    influence               = 1000,
-                    elevation_optimal       = -15000,
-                    elevation_range         = 1,
-                    elevation_max_range     = 1
-                },
-                {
-                    influence               = 1
-                }
-            }
+            probability_expression = noise.to_noise_expression(-math.huge)
         }
-    -- local nowater = water_autoplace_settings(10000)
 
+    local t = data.raw.tile
     t.water.autoplace = nowater
     t.deepwater.autoplace = nowater
     t['water-green'].autoplace = nowater
@@ -71,7 +39,7 @@ local function adjust(tile)
     end
 end
 
-if settings.startup['ctg-brightmap'] then
+if false and settings.startup['ctg-brightmap'] then
     for name, tile in pairs(data.raw.tile) do
         adjust(tile)
     end

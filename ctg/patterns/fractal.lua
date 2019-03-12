@@ -1,4 +1,5 @@
 require("lib/pqueue")
+require("lib/rand")
 
 function Fractal(dimension, width, aspect)
     local d = dimension or 1.4
@@ -25,6 +26,7 @@ function Fractal(dimension, width, aspect)
         data.rectangles = {}
         data.circles = {}
         data.ends_data = ends.data
+        data.rng = new_rng()
 
         init()
         return data
@@ -50,7 +52,7 @@ function Fractal(dimension, width, aspect)
     -- Choose a random length for a rectangle to be.
     -- We use the Dagum distribution with a = p = 2.
     local function length()
-        return w * a * (((math.random() ^ (-0.5)) - 1) ^ (-0.5))
+        return w * a * (((data.rng() ^ (-0.5)) - 1) ^ (-0.5))
     end
 
     -- (x0, y0) and (x1, y1) define a line going down the *center*
@@ -119,13 +121,13 @@ function Fractal(dimension, width, aspect)
         local e = ends.peek()
         if branches_needed(e[1]) > ends.size() then
             -- Two branches
-            e1 = extend1(e[2], e[3], e[4] + math.pi * (math.random() / turn + 1/3))
-            e2 = extend1(e[2], e[3], e[4] - math.pi * (math.random() / turn + 1/3))
+            e1 = extend1(e[2], e[3], e[4] + math.pi * (data.rng() / turn + 1/3))
+            e2 = extend1(e[2], e[3], e[4] - math.pi * (data.rng() / turn + 1/3))
             ends.pop_and_push(e1[1], e1)
             ends.push(e2[1], e2)
         else
             -- One branch
-            e1 = extend1(e[2], e[3], e[4] + math.pi * (2 * math.random() - 1) / turn)
+            e1 = extend1(e[2], e[3], e[4] + math.pi * (2 * data.rng() - 1) / turn)
             ends.pop_and_push(e1[1], e1)
         end
     end
@@ -133,11 +135,11 @@ function Fractal(dimension, width, aspect)
     -- local function init()
     init = function()
         add_circle(0, 0)
-        local theta = 2 * math.pi * math.random()
+        local theta = 2 * math.pi * data.rng()
         local e = extend1(0, 0, theta)
         ends.push(e[1], e)
 
-        theta = theta + math.pi * (1 + (2 * math.random() - 1) / (2 * turn))
+        theta = theta + math.pi * (1 + (2 * data.rng() - 1) / (2 * turn))
         e = extend1(0, 0, theta)
         ends.push(e[1], e)
     end

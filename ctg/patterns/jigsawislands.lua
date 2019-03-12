@@ -1,3 +1,5 @@
+require("lib/rand")
+
 function JigsawIslands(landratio)
     local lr = landratio or 0.5
     local l = math.sqrt(lr)
@@ -24,7 +26,8 @@ function JigsawIslands(landratio)
     local function create()
         data = {
             groups = {},
-            xy2group = {}
+            xy2group = {},
+            seed = rand_i()
         }
 
         return data
@@ -59,7 +62,7 @@ function JigsawIslands(landratio)
 
             keys[k] = true
 
-            local dir = dirs[1 + math.floor(math.random() * 4)]
+            local dir = dirs[1 + (rand_iii2i(data.seed, x, y) % 4)]
             if count < 3 and keys[key(x + dir.dx, y + dir.dy)] then
                 dir = {dx = -dir.dx, dy = -dir.dy}
             end

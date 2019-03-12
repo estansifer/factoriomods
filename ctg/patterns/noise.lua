@@ -1,5 +1,6 @@
 require("simple")
 require("lib/fft")
+require("lib/rand")
 
 local tau = 2 * math.pi
 
@@ -24,7 +25,7 @@ local function default(t, k, v)
     end
 end
 
-local function randomize_phases(schema, wmin, wmax)
+local function randomize_phases(schema, wmin, wmax, rng)
     local thetass = {}
     for idx = 1, #(schema[1]) do
         local inner = schema[1][idx]
@@ -40,9 +41,9 @@ local function randomize_phases(schema, wmin, wmax)
                 local w = tau * math.sqrt(wx * wx + wy * wy) / (M * zoom)
                 if (w > 0 and w >= wmin and w <= wmax and
                     (extended or (wx >= inner) or (wy >= inner))) then
-                    table.insert(thetas, tau * math.random())
+                    table.insert(thetas, tau * rng())
                     if wx > 0 and wy > 0 and 2 * wy < M then
-                        table.insert(thetas, tau * math.random())
+                        table.insert(thetas, tau * rng())
                     end
                 end
             end
@@ -304,14 +305,14 @@ function Noise(options)
         compute_stddev()
     end
 
-    local function randomize_starting_square()
-        data.dx = math.random(1000000)
-        data.dy = math.random(1000000)
+    local function randomize_starting_square(rng)
+        data.dx = math.floor(rng() * 1000000)
+        data.dy = math.floor(rng() * 1000000)
     end
 
-    local function init()
-        data.phasess = randomize_phases(grid_schema, wmin, wmax)
-        randomize_starting_square()
+    local function init(rng)
+        data.phasess = randomize_phases(grid_schema, wmin, wmax, rng)
+        randomize_starting_square(rng)
         build_data()
     end
 
@@ -372,13 +373,14 @@ function Noise(options)
 
     local function height_distribution()
         print("Sampling heights")
+        local rng = new_rng()
         local M = 100000
         local s = 0
         local ss = 0
         local h
         local hs = {}
         for i = 1, M do
-            h = height(math.random(1000000), math.random(1000000))
+            h = height(rng(1000000), rng(1000000))
             s = s + h
             ss = ss + h * h
             table.insert(hs, h)
@@ -396,16 +398,17 @@ function Noise(options)
     end
 
     local function create()
+        local rng = new_rng()
         local num_attempts = 0
         local max_attempts = 1000
         repeat
             if num_attempts % 100 == 0 then
-                init()
+                init(rng)
                 if num_attempts > 400 then
                     start_on_beach = false
                 end
             else
-                randomize_starting_square()
+                randomize_starting_square(rng)
             end
             num_attempts = num_attempts + 1
         until verify_ok() or num_attempts >= max_attempts

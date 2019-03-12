@@ -1,4 +1,4 @@
-require("lib/randgrid")
+require("lib/rand")
 
 function Maze3(t, v)
     if v == nil then
@@ -21,11 +21,10 @@ function Maze3(t, v)
         threshhold = 0.6
     end
 
-    local data
-    local rg
+    local seed = nil
 
     local function geti(x, y)
-        return rg.geti(x, y) < threshhold
+        return rand_iii2f(seed, x, y) < threshhold
     end
 
     local function get(x, y)
@@ -74,21 +73,17 @@ function Maze3(t, v)
     end
 
     local function create()
-        data = {}
         local num_attempts = 0
         repeat
-            rg = RandGrid()
-            data.randgrid = rg.create()
+            seed = rand_i()
             num_attempts = num_attempts + 1
         until verify_ok() or num_attempts >= max_attempts
 
-        return data
+        return seed
     end
 
     local function reload(d)
-        data = d
-        rg = RandGrid()
-        rg.reload(data.randgrid)
+        seed = d
     end
 
     return {

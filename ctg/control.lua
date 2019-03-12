@@ -1,6 +1,7 @@
 require("metaconfig")
 require("evalpattern")
 require("screenshot")
+require("lib/rand")
 
 local get_tile = nil
 local force_initial_water = false
@@ -121,6 +122,8 @@ local function on_init(event)
     global.settings = read_settings()
 
     if global.enabled then
+        init_global_rng(global.settings['seed'])
+
         force_initial_water = global.settings['force-initial-water']
         local tp = evaluate_pattern(global.settings)
         global.tp_data = tp.create()

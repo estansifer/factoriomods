@@ -1,4 +1,5 @@
-require "lib/union-find"
+require("lib/union-find")
+require("lib/rand")
 
 local append = table.insert
 
@@ -46,15 +47,18 @@ function Maze1()
     local function create()
         values = {}
         group = UnionFind()
-        data = {
-            values          = values,
-            group_data      = group.data
-        }
+
+        data = {}
+        data.values = {}
+        data.group_data = group.data
+        data.rng = new_rng()
+
         x1 = -1
         y1 = -1
         x2 = 0
         y2 = 0
         resync()
+
         assign(0, 0, true)
         assign(-1, 0, true)
         assign(0, -1, true)
@@ -89,7 +93,7 @@ function Maze1()
         while n >= #fibs do
             append(fibs, fibs[#fibs] + fibs[#fibs - 1])
         end
-        return math.floor(math.random() * fibs[n + 1])
+        return math.floor(data.rng() * fibs[n + 1])
     end
 
     local function expand()
@@ -166,7 +170,7 @@ function Maze1()
                     append(r, random(#c))
                     if r[#r] > 0 then
                         positive = true
-                        if not values[k] and math.random() < connectedness then
+                        if not values[k] and data.rng() < connectedness then
                             r[#r] = 0
                         end
                     end
@@ -187,22 +191,22 @@ function Maze1()
         if (v[key(x1, y1)] == v[key(x1, y1 - 1)]) and (v[key(x1, y1)] == v[key(x1 - 1, y1)]) then
             assign(x1 - 1, y1 - 1, not v[key(x1, y1)])
         else
-            assign(x1 - 1, y1 - 1, math.random() < 0.5)
+            assign(x1 - 1, y1 - 1, data.rng() < 0.5)
         end
         if (v[key(x1, y2)] == v[key(x1, y2 + 1)]) and (v[key(x1, y2)] == v[key(x1 - 1, y2)]) then
             assign(x1 - 1, y2 + 1, not v[key(x1, y2)])
         else
-            assign(x1 - 1, y2 + 1, math.random() < 0.5)
+            assign(x1 - 1, y2 + 1, data.rng() < 0.5)
         end
         if (v[key(x2, y1)] == v[key(x2, y1 - 1)]) and (v[key(x2, y1)] == v[key(x2 + 1, y1)]) then
             assign(x2 + 1, y1 - 1, not v[key(x2, y1)])
         else
-            assign(x2 + 1, y1 - 1, math.random() < 0.5)
+            assign(x2 + 1, y1 - 1, data.rng() < 0.5)
         end
         if (v[key(x2, y2)] == v[key(x2, y2 + 1)]) and (v[key(x2, y2)] == v[key(x2 + 1, y2)]) then
             assign(x2 + 1, y2 + 1, not v[key(x2, y2)])
         else
-            assign(x2 + 1, y2 + 1, math.random() < 0.5)
+            assign(x2 + 1, y2 + 1, data.rng() < 0.5)
         end
 
         x1 = x1 - 1

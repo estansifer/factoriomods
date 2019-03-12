@@ -167,7 +167,7 @@ end
 
 function RectSpiral()
     local function get(x, y)
-        if math.abs(x) > math.abs(y) or (x + y > 0 and y < x + 2) then
+        if math.abs(x) > math.abs(y) or (x + y >= 0 and y < x + 2) then
             return ((x + 0.5) % 2) < 1
         else
             return ((y + 0.5) % 2) < 1

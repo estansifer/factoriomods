@@ -10,9 +10,9 @@ land, water, and void cells at the start of a new game.
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.3.0
+ * Version 0.4.0
  * Initial release: 2016-03-15
- * Current release: 2018-12-01
+ * Current release: 2019-03-12
 
 ## Important notes
 
@@ -40,7 +40,7 @@ to combine them in many ways or write your own algorithm.
 
 ## How to use
 
-By default, the mod creates a maze. The `Water pattern preset` option gives a large list
+By default, the mod creates a maze. The `Terrain preset` option gives a large list
 of other patterns that have been given as examples. Screenshots of each of these can be
 found above.
 
@@ -92,18 +92,20 @@ own pattern. If your terrain pattern uses more than one line of lua code, you us
 
 Here is a list of every preset and the code used to generate it:
 
- * spiral: Spiral(1.3, 0.4)
+ * spiral: Union(Spiral(1.3, 0.4), Rectangle(-105, -2, 115, 2))
  * arithmetic spiral: ArithmeticSpiral(50, 0.4)
  * rectilinear spiral: Zoom(RectSpiral(), 50)
  * triple spiral: AngularRepeat(Spiral(1.6, 0.5), 3)
  * crossing spirals: Union(Spiral(1.4, 0.4), Spiral(1 / 1.6, 0.2))
- * natural archipelago: NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.13})
+ * natural archipelago:
+        Union(NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.07}),
+        NoiseCustom({exponent=1.9,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.1,start_on_land=false,start_on_beach=false}))
  * natural big islands: NoiseCustom({exponent=2.3,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.2})
  * natural continents: NoiseCustom({exponent=2.4,noise={1,1,1,1,1,1,1,0.6,0.3,0.2},land_percent=0.35})
- * natural half land: NoiseCustom({exponent=2,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.5})
- * natural big lakes: NoiseCustom({exponent=2.3,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.65})
- * natural medium lakes: NoiseCustom({exponent=2.1,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.86})
- * natural small lakes: NoiseCustom({exponent=1.8,noise={0.2,0.3,0.4,0.6,1,1,0.7,0.4,0.3,0.2},land_percent=0.96})
+ * natural half land: NoiseCustom({exponent=2,noise={0.5,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.5})
+ * natural big lakes: NoiseCustom({exponent=2.3,noise={0.5,0.8,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.65})
+ * natural medium lakes: NoiseCustom({exponent=2.1,noise={0.3,0.6,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.86})
+ * natural small lakes: NoiseCustom({exponent=1.5,noise={0.05,0.1,0.4,0.7,1,0.7,0.3,0.1},land_percent=0.92})
  * pink noise (good luck...): NoiseExponent({exponent=1,land_percent = 0.35})
  * radioactive: Union(AngularRepeat(Halfplane(), 3), Circle(38))
  * comb: Zoom(Comb(), 50)
@@ -257,8 +259,16 @@ Optional parameters have their default values indicated.
     The default array causes very large size features to be de-emphasized slightly.
  * See the section on void cells for the usage of TP (`terrain pattern`). `waterpattern` describes
  the placement of water (or nil to generate no water), and `voidpattern` describes the placement
- of void (or nil to generate no water). `watercolor` can be blue, green, or nil; if nil, the mod
+ of void (or nil to generate no void). `watercolor` can be "blue", "green", or nil; if nil, the mod
  setting for water color is used. Where water and void coincide, void takes precedent.
+
+## Random Seed
+
+ * If you would like to generate the exact same map when restarting the game or when playing on
+ another computer with the same settings, use the "seed" option in the settings. For each value
+ from 1 to 2^32, if you use the same seed, you will get the same map every time; if you change
+ the seed, you get a different map entirely. If you choose the seed value of 0, then the seed
+ will be randomly selected for you, and the map will be different each time you restart.
 
 ## Unimportant Notes
 
@@ -266,22 +276,31 @@ Optional parameters have their default values indicated.
  numbers in base Fibonacci, the Burr distribution, the Dagum distribution, queues,
  priority queues, union-find algorithm, the Mandelbrot set, Perlin noise,
  a differential equation solver using fourth-order Runge-Kutta, percolation theory,
- diffusion limited aggregates (related to Wilson's maze algorithm), the inverse error
- function, and the Fast Fourier Transform.
+ diffusion limited aggregates (related to Wilson's maze algorithm), a pseudo-random number
+ generator, the inverse error function, and the Fast Fourier Transform.
  * The `distort` transformation may get improved in the future, but I find that the Noise pattern
  does better at accomplishing roughly the same goal.
 
 ## Versions
 
+ * 0.4.0
+    * It is now possible to set a seed so that you can produce the same terrain on different playthroughs.
+    * All patterns except JigsawIslands have been adjusted so that terrain generation no longer
+    depends on what order you explore the terrain in.
+    * Screenshotting bugfix.
+    * Fixed artifact in Zoom(RectGrid(), z) when the zoom level is a power of two: thanks
+    fessoric for the bug report.
+    * Added thumbnail.
  * 0.3.0 Changes:
     * Simplified the mod settings so that water and void generation are combined into one setting.
     This makes setting up a map with no void slightly more streamlined, and also allows for the
-    possibility of patterns that entagle the generation of water and void.
+    possibility of patterns that entangle the generation of water and void.
     * Tweaked some of the suggested preset maps, particularly the "natural" maps
     * Added the option to preserve Factorio's normal water generation, say for use with void maps.
     * Added internal support for future planned features
- * 0.2.1 Fixed bug in Maze3 / RandGrid; fixed misleading statement in README and warning message.
-    Thanks Kent2007 for reporting the bug.
+ * 0.2.1
+    * Fixed bug in Maze3 / RandGrid; thanks Kent2007 for reporting the bug.
+    * Fixed misleading statement in README and warning message.
  * 0.2.0 Many changes:
     * Updated for Factorio 0.16 (skipping 0.15)
     * Rewrote all core code
@@ -305,7 +324,7 @@ Optional parameters have their default values indicated.
     * Many smaller changes
  * 0.1.1 Union and Intersection take any number of arguments instead of just two. Fixed bug
  in AllWater, thanks sintri on the forums for being the first person to find a bug. Added
- Rectangle pattern and changed Circle to take an optional center arugment.
+ Rectangle pattern and changed Circle to take an optional center argument.
  * 0.1.0 Added Distort, Jitter, Checkerboard, AllLand, AllWater, Rotate, Affine, Tile,
  AngularRepeat, Invert, Smooth, KroneckerProduct, IslandifyCircles, SquaresAndBridges,
  and CirclesAndBridges patterns. Multiple backwards incompatible changes. Made compatible
@@ -326,6 +345,9 @@ Optional parameters have their default values indicated.
  * 0.0.1 Initial release
 
 ## Known Issues
+
+ * Some of the islands generated by JigsawIslands will have slightly different shape depending on
+ which side of the island is explored first.
 
 ## License
 

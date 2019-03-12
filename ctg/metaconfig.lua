@@ -3,6 +3,7 @@ meta = {
     setting_type    = "runtime-global",
     -- List of pairs of name of preset and code to generate preset
     pattern_presets = {
+            {"custom", nil},
             {"spiral", "Union(Spiral(1.3, 0.4), Rectangle(-105, -2, 115, 2))"},
             {"arithmetic spiral", "ArithmeticSpiral(50, 0.4)"},
             {"rectilinear spiral", "Zoom(RectSpiral(), 50)"},
@@ -46,7 +47,8 @@ meta = {
             {"jigsaw islands", "Zoom(JigsawIslands(0.3), 40)"},
             {"pink noise maze",
                 "Intersection(Zoom(Maze2(), 50), NoiseExponent{exponent=1,land_percent=0.8})"},
-            {"custom", nil}
+            {"tiny pot holes", "TP(nil, Zoom(Maze3(0.997), 2))"},
+            {"small pot holes", "TP(nil, Zoom(Maze3(0.994), 3))"}
     }
     -- void_pattern_presets = {
             -- {"tiny pot holes", "Maze3(0.997)"},
@@ -94,7 +96,6 @@ local function mk_int(name, def, range)
 end
 
 meta.settings = {
-    mk_dropdown("water-color", meta.water_colors),
     mk_dropdown("pattern-preset", map_first(meta.pattern_presets), "maze 2 (DLA)"),
     mk_str("pattern-custom", "(lua code goes here)"),
 
@@ -106,6 +107,9 @@ meta.settings = {
     mk_str("pattern-v6", "nil"),
     mk_str("pattern-v7", "nil"),
     mk_str("pattern-v8", "nil"),
+
+    mk_dropdown("water-color", meta.water_colors),
+    mk_int("seed", 0, {0, 2 ^ 32}),
 
     mk_bool("initial-landfill", false),
     mk_bool("force-initial-water", false),

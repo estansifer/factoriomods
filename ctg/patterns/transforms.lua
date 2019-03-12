@@ -1,4 +1,5 @@
 require("simple")
+require("lib/rand")
 
 local function noop()
     return nil
@@ -259,6 +260,7 @@ function Jitter(pattern, radius)
         data = {}
         data.values = {}
         data.pattern = pattern.create()
+        data.seed = rand_i()
         return data
     end
 
@@ -268,8 +270,8 @@ function Jitter(pattern, radius)
     end
 
     local function compute(x, y)
-        local dx = (math.random() + math.random() - 1) * (r / 2)
-        local dy = (math.random() + math.random() - 1) * (r / 2)
+        local dx = (rand_iiii2f(data.seed, x, y, 0) + rand_iiii2f(data.seed, x, y, 1) - 1) * (r / 2)
+        local dy = (rand_iiii2f(data.seed, x, y, 2) + rand_iiii2f(data.seed, x, y, 3) - 1) * (r / 2)
         return pget(x + dx, y + dy)
     end
 

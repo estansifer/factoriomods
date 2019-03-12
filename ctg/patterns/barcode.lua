@@ -1,3 +1,5 @@
+require("lib/rand")
+
 -- landthickness is the mean thickness of each bar of land
 -- landthickness / (sqrt(2) - 1) is the median thickness
 -- angle is in *degrees*
@@ -14,17 +16,18 @@ function Barcode(angle, landthickness, waterthickness)
     end
     local data
 
-    local function random_thickness(median)
+    local function random_thickness(median, cdf)
         -- Burr distribution with c = 1, k = 2 (and shifted by 3)
-        local cdf = math.random()
         return ((1 / math.sqrt(cdf)) - 1) * (median - 3) + 3
     end
 
     local function create()
         data = {}
         data.bars = {}
+        data.rng_low = new_rng()
+        data.rng_high = new_rng()
 
-        local x = random_thickness(l)
+        local x = random_thickness(l, data.rng_low())
         data.bars[0] = {
                 t = - (x / 2),
                 dt = x,
@@ -35,7 +38,7 @@ function Barcode(angle, landthickness, waterthickness)
         data.highest_bar = 0
         data.angle = angle
         if angle == nil then
-            data.angle = 180 * math.random()
+            data.angle = 180 * data.rng_low()
         end
 
         return data
@@ -49,9 +52,9 @@ function Barcode(angle, landthickness, waterthickness)
         local bar = data.bars[data.least_bar]
         local x
         if bar.land then
-            x = random_thickness(w)
+            x = random_thickness(w, data.rng_low())
         else
-            x = random_thickness(l)
+            x = random_thickness(l, data.rng_low())
         end
 
         data.least_bar = data.least_bar - 1
@@ -66,9 +69,9 @@ function Barcode(angle, landthickness, waterthickness)
         local bar = data.bars[data.highest_bar]
         local x
         if bar.land then
-            x = random_thickness(w)
+            x = random_thickness(w, data.rng_high())
         else
-            x = random_thickness(l)
+            x = random_thickness(l, data.rng_high())
         end
 
         data.highest_bar = data.highest_bar + 1
@@ -127,19 +130,19 @@ function ConcentricBarcode(landthickness, waterthickness)
 
     local data
 
-    local function random_thickness(median)
+    local function random_thickness(median, cdf)
         -- Burr distribution with c = 1, k = 2 (and shifted by 3)
-        local cdf = math.random()
         return ((1 / math.sqrt(cdf)) - 1) * (median - 3) + 3
     end
 
     local function create()
         data = {}
         data.bars = {}
+        data.rng = new_rng()
 
         data.bars[0] = {
                 r = - 1,
-                dr = 2 + random_thickness(l),
+                dr = 2 + random_thickness(l, data.rng()),
                 land = true
             }
 
@@ -156,9 +159,9 @@ function ConcentricBarcode(landthickness, waterthickness)
         local bar = data.bars[data.highest_bar]
         local x
         if bar.land then
-            x = random_thickness(w)
+            x = random_thickness(w, data.rng())
         else
-            x = random_thickness(l)
+            x = random_thickness(l, data.rng())
         end
 
         data.highest_bar = data.highest_bar + 1

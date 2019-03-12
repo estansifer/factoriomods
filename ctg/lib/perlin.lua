@@ -1,3 +1,4 @@
+require("lib/rand")
 -- I hope this is the last time I have to implement Perlin noise in Lua. I did at
 -- least 3 totally different implementations here just trying to get it fast and
 -- accurate enough.
@@ -24,14 +25,17 @@ function PerlinNoise(N_)
     -- ix * N + iy gives index corresponding to the integer x,y values (ix, iy)
 
     local function make_rand_vectors()
+        local seed = rand_i()
+        data.rand_vectors = {}
         for i = 0, NN-1 do
-            local a = math.random() * 2 * math.pi
+            local a = rand_ii2f(seed, i) * 2 * math.pi
             data.rand_vectors[i] = {math.cos(a), math.sin(a)}
         end
     end
 
     local function calculate_noise_coefficients()
         local r = data.rand_vectors
+        data.noise = {}
         for i = 0, NN-1 do
             local n = {0, 0, 0, 0, 0, 0, 0, 0}
             n[1] = r[i][1]
@@ -127,8 +131,6 @@ function PerlinNoise(N_)
 
     local function create()
         data = {}
-        data.rand_vectors = {}
-        data.noise = {}
 
         make_rand_vectors()
         calculate_noise_coefficients()

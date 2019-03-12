@@ -1,4 +1,4 @@
-require "lib/queue"
+require("lib/queue")
 
 -- Based on Wilson's algorithm
 function Maze2()
@@ -45,7 +45,8 @@ function Maze2()
             pending         = {},
             pendingsum      = 0,
             pendingr        = 0,
-            nearest         = 0
+            nearest         = 0,
+            rng             = new_rng()
         }
 
         makeland(0, 0)
@@ -109,10 +110,10 @@ function Maze2()
     end
 
     local function random_direction(x, y)
-        if math.random() < 0.95 then
-            return dirs[1 + math.floor(math.random() * 4)]
+        if data.rng() < 0.95 then
+            return dirs[1 + math.floor(data.rng() * 4)]
         else
-            if math.random() < 0.5 then
+            if data.rng() < 0.5 then
                 if x < 0 then
                     return {dx = 1, dy = 0}
                 else
@@ -183,7 +184,7 @@ function Maze2()
 
     local function diffuse()
         update_pending()
-        r = math.random() * data.pendingsum
+        r = data.rng() * data.pendingsum
 
         for k, v in pairs(data.pending) do
             r = r - v.w
