@@ -1,7 +1,7 @@
 {
     "name": "invisifactorio",
-    "version": "0.0.2",
-    "factorio_version": "0.16",
+    "version": "0.0.3",
+    "factorio_version": "0.17",
     "title": "Invisifactorio",
     "author": "Eric Stansifer",
     "description": "Items, trains, and/or biters can be made invisible",

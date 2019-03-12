@@ -124,8 +124,8 @@ Here is a list of every preset and the code used to generate it:
  * mandelbrot: Tile(Mandelbrot(300), 150, 315, -600, -315)
  * jigsaw islands: Zoom(JigsawIslands(0.3), 40)
  * pink noise maze: Intersection(Zoom(Maze2(), 50), NoiseExponent{exponent=1,land_percent=0.8})
- * tiny pot holes: Maze3(0.997)
- * small pot holes: Zoom(Maze3(0.994), 3)
+ * tiny pot holes: TP(nil, Zoom(Maze3(0.997), 2))
+ * small pot holes: TP(nil, Zoom(Maze3(0.994), 3))
 
 ### Full listing of all provided patterns
 
@@ -284,14 +284,14 @@ Optional parameters have their default values indicated.
 ## Versions
 
  * 0.4.0
+    * Updated for Factorio 0.17
     * It is now possible to set a seed so that you can produce the same terrain on different playthroughs.
     * All patterns except JigsawIslands have been adjusted so that terrain generation no longer
     depends on what order you explore the terrain in.
     * Screenshotting bugfix.
     * Fixed artifact in Zoom(RectGrid(), z) when the zoom level is a power of two: thanks
     fessoric for the bug report.
-    * Added thumbnail.
- * 0.3.0 Changes:
+ * 0.3.0
     * Simplified the mod settings so that water and void generation are combined into one setting.
     This makes setting up a map with no void slightly more streamlined, and also allows for the
     possibility of patterns that entangle the generation of water and void.

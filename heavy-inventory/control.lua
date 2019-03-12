@@ -20,9 +20,6 @@ local function check_burden(event)
     local player = game.players[event.player_index]
     local fullness = compute_fullness(player)
 
-    -- Despite the documentation saying this is read-only, in fact you
-    -- can write to it.
-    --
     -- This value is *added* to 1 to make the player's true speed. So
     -- if this value is set to 0, the player walks normally. At 1, the
     -- player moves at double speed. At -1, the player cannot move at all.

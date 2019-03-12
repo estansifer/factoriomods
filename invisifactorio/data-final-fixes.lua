@@ -98,7 +98,7 @@ if not_vis('trains') then
     a[2].hr_version.filenames[7] = f(2004, 750)
 end
 
-if not_vis('biters') then
+if false and not_vis('biters') then
     local biters = {'small-biter', 'medium-biter', 'big-biter', 'behemoth-biter'}
     local spitters = {'small-spitter', 'medium-spitter', 'big-spitter', 'behemoth-spitter'}
 
