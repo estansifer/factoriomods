@@ -60,7 +60,7 @@ end
 function Strip(width)
     local n = width or 1
     local function get(x, y)
-        return (math.abs(y) * 2) < n
+        return (math.abs(y + 0.25) * 2) < n
     end
     return {create = noop, reload = noop, get = get, output = "bool"}
 end
@@ -68,32 +68,28 @@ end
 function Cross(width)
     local n = width or 1
     local function get(x, y)
-        return (math.abs(x) * 2 < n) or (math.abs(y) * 2 < n)
+        return (math.abs(x + 0.25) * 2 < n) or (math.abs(y + 0.25) * 2 < n)
     end
     return {create = noop, reload = noop, get = get, output = "bool"}
 end
 
 function Comb()
     local function get(x, y)
-        if x < -1 then
-            return false
-        else
-            return (x < 2) or ((y % 2) < 1)
-        end
+        return (x >= -1) and ((x < 2) or (((y + 0.5) % 2) < 1))
     end
     return {create = noop, reload = noop, get = get, output = "bool"}
 end
 
 function Grid()
     local function get(x, y)
-        return ((x % 2) < 1) or ((y % 2) < 1)
+        return (((x + 0.5) % 2) < 1) or (((y + 0.5) % 2) < 1)
     end
     return {create = noop, reload = noop, get = get, output = "bool"}
 end
 
 function Checkerboard()
     local function get(x, y)
-        return ((x % 2) < 1) == ((y % 2) < 1)
+        return (((x + 0.5) % 2) < 1) == (((y + 0.5) % 2) < 1)
     end
     return {create = noop, reload = noop, get = get, output = "bool"}
 end

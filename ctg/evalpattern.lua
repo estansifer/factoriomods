@@ -1,10 +1,11 @@
 require("patterns/patterns")
 
-local function eval(str)
-    if false then -- string.find(str, "return", 1, true) ~= nil then
-        return assert(load(str))()
+local function eval(str, env)
+    -- string.find(str, "return", 1, true) ~= nil then
+    if env == nil then
+        return assert(load("return (" .. str .. ")", str, 't'))()
     else
-        return assert(load("return (" .. str .. ")"))()
+        return assert(load("return (" .. str .. ")", str, 't', env))()
     end
 end
 
@@ -23,11 +24,11 @@ local function evaluate_pattern_with_context(pattern, vars)
     for i = 1, #vars do
         local item = vars[#vars - i + 1]
         local var_name = item[1]
-        local var_value = eval(item[2], item[2], "t", env)
+        local var_value = eval(item[2], env)
         env[var_name] = var_value
     end
 
-    return eval(pattern, pattern, "t", env)
+    return eval(pattern, env)
 end
 
 function evaluate_pattern(s)

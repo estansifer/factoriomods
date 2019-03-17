@@ -10,9 +10,9 @@ land, water, and void cells at the start of a new game.
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.4.0
+ * Version 0.4.1
  * Initial release: 2016-03-15
- * Current release: 2019-03-12
+ * Current release: 2019-03-17
 
 ## Important notes
 
@@ -283,6 +283,10 @@ Optional parameters have their default values indicated.
 
 ## Versions
 
+ * 0.4.1
+    * Fixed bug in the variables v1 - v8 not working for custom patterns.
+    * Slightly tweaked behavior of Cross, Strip, Comb, Grid, and Checkerboard, resolving
+    problem with Cross and Strip only generating odd widths.
  * 0.4.0
     * Updated for Factorio 0.17
     * It is now possible to set a seed so that you can produce the same terrain on different playthroughs.
