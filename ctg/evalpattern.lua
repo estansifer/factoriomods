@@ -1,3 +1,4 @@
+require("metaconfig")
 require("patterns/patterns")
 
 local function eval(str, env)

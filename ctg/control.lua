@@ -2,6 +2,7 @@ require("metaconfig")
 require("evalpattern")
 require("screenshot")
 require("lib/rand")
+require("migrations")
 
 local get_tile = nil
 local force_initial_water = false
@@ -151,3 +152,4 @@ end
 
 script.on_init(on_init)
 script.on_load(on_load)
+script.on_configuration_changed(migrate_1)

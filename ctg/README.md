@@ -10,9 +10,9 @@ land, water, and void cells at the start of a new game.
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.4.1
+ * Version 0.4.2
  * Initial release: 2016-03-15
- * Current release: 2019-03-17
+ * Current release: 2019-04-01
 
 ## Important notes
 
@@ -283,6 +283,8 @@ Optional parameters have their default values indicated.
 
 ## Versions
 
+ * 0.4.2
+    * No change except for a specific save file.
  * 0.4.1
     * Fixed bug in the variables v1 - v8 not working for custom patterns.
     * Slightly tweaked behavior of Cross, Strip, Comb, Grid, and Checkerboard, resolving
