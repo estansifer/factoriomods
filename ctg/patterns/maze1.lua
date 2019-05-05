@@ -49,7 +49,7 @@ function Maze1()
         group = UnionFind()
 
         data = {}
-        data.values = {}
+        data.values = values
         data.group_data = group.data
         data.rng = new_rng()
 

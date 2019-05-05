@@ -10,9 +10,9 @@ land, water, and void cells at the start of a new game.
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.4.2
+ * Version 0.4.3
  * Initial release: 2016-03-15
- * Current release: 2019-04-01
+ * Current release: 2019-04-29
 
 ## Important notes
 
@@ -283,6 +283,8 @@ Optional parameters have their default values indicated.
 
 ## Versions
 
+ * 0.4.3
+    * Fixed bug in Maze1; thanks moldj for the detailed bug report.
  * 0.4.2
     * No change except for a specific save file.
  * 0.4.1
@@ -295,7 +297,7 @@ Optional parameters have their default values indicated.
     * All patterns except JigsawIslands have been adjusted so that terrain generation no longer
     depends on what order you explore the terrain in.
     * Screenshotting bugfix.
-    * Fixed artifact in Zoom(RectGrid(), z) when the zoom level is a power of two: thanks
+    * Fixed artifact in Zoom(RectGrid(), z) when the zoom level is a power of two; thanks
     fessoric for the bug report.
  * 0.3.0
     * Simplified the mod settings so that water and void generation are combined into one setting.
