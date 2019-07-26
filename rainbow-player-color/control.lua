@@ -21,15 +21,20 @@ local function on_tick(event)
     if (event.tick % 10 == 0) then
         for pid, player in pairs(game.players) do
 
-            local o = global.color_offsets[pid]
-            if o == nil then
-                o = math.random()
-                global.color_offsets[pid] = o
+            local s = settings.get_player_settings(player)
+
+            if s["rainbow-player-color-enable"].value then
+
+                local o = global.color_offsets[pid]
+                if o == nil then
+                    o = math.random()
+                    global.color_offsets[pid] = o
+                end
+
+                local t = s["rainbow-player-color-change-time"].value
+
+                player.color = get_color((o + event.tick / (6 * 60 * t)) % 1)
             end
-
-            local t = settings.get_player_settings(player)["rainbow-player-color-change-time"].value
-
-            player.color = get_color((o + event.tick / (6 * 60 * t)) % 1)
         end
     end
 end
