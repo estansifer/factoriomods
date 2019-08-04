@@ -1,0 +1,9 @@
+{
+    "name": "randomize-items",
+    "version": "0.0.1",
+    "factorio_version": "0.17",
+    "title": "Randomize items",
+    "author": "Eric Stansifer",
+    "description": "Randomly shuffles all item names and icons.",
+    "dependencies": ["base"]
+}
