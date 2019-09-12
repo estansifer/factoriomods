@@ -1,19 +1,19 @@
 -- x is a number from 0 to 1
 -- 0 = red -> yellow -> green -> cyan -> blue -> purple -> red = 1
-local function get_color(x)
+local function get_color(x, a)
     local y = x * 6
     if y < 1 then
-        return {r = 1, g = y}
+        return {r = 1, g = y, a = a}
     elseif y < 2 then
-        return {r = 2 - y, g = 1}
+        return {r = 2 - y, g = 1, a = a}
     elseif y < 3 then
-        return {g = 1, b = y - 2}
+        return {g = 1, b = y - 2, a = a}
     elseif y < 4 then
-        return {g = 4 - y, b = 1}
+        return {g = 4 - y, b = 1, a = a}
     elseif y < 5 then
-        return {b = 1, r = y - 4}
+        return {b = 1, r = y - 4, a = a}
     else
-        return {b = 6 - y, r = 1}
+        return {b = 6 - y, r = 1, a = a}
     end
 end
 
@@ -32,8 +32,9 @@ local function on_tick(event)
                 end
 
                 local t = s["rainbow-player-color-change-time"].value
+                local a = s["rainbow-player-color-alpha"].value
 
-                player.color = get_color((o + event.tick / (6 * 60 * t)) % 1)
+                player.color = get_color((o + event.tick / (6 * 60 * t)) % 1, a)
             end
         end
     end

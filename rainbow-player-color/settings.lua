@@ -13,5 +13,14 @@ data:extend{
         default_value = 300,
         minimum_value = 1,
         order = "b"
+    },
+    {
+        type = "double-setting",
+        name = "rainbow-player-color-alpha",
+        setting_type = "runtime-per-user",
+        default_value = 1,
+        minimum_value = 0,
+        maximum_value = 1,
+        order = "c"
     }
 }
