@@ -1,0 +1,9 @@
+{
+    "name": "timelapse",
+    "version": "0.0.1",
+    "factorio_version": "0.18",
+    "title": "Timelapse",
+    "author": "Eric Stansifer",
+    "description": "Saves a recording of all entities and tiles placed in the game. Python script for displaying the recording is included.",
+    "dependencies": ["base"]
+}

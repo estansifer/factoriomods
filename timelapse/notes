@@ -1,0 +1,138 @@
+Taken from data.raw
+
+chart = {
+        artillery_range_color = {
+          a = 1,
+          b = 0.25,
+          g = 0.25,
+          r = 0.8
+        },
+        blue_signal_color = {
+          b = 1,
+          g = 0,
+          r = 0
+        },
+        chart_train_stop_disabled_text_color = {
+          b = 0.2,
+          g = 0.2,
+          r = 0.9
+        },
+        custom_tag_scale = 0.5625,
+        custom_tag_selected_overlay_tint = {
+          a = 0,
+          b = 1,
+          g = 1,
+          r = 1
+        },
+        default_color_by_type = {
+          tree = {
+            a = 0.19,
+            b = 0.19,
+            g = 0.39000000000000004,
+            r = 0.19
+          }
+        },
+        default_enemy_color = {
+          b = 0.1,
+          g = 0.1,
+          r = 1
+        },
+        default_friendly_color = {
+          b = 0.56999999999999993,
+          g = 0.37999999999999998,
+          r = 0
+        },
+        default_friendly_color_by_type = {
+          accumulator = {
+            b = 0.42000000000000002,
+            g = 0.42000000000000002,
+            r = 0.42000000000000002
+          },
+          ["ammo-turret"] = {
+            b = 24,
+            g = 167,
+            r = 202
+          },
+          ["electric-turret"] = {
+            b = 0.17999999999999998,
+            g = 0.17999999999999998,
+            r = 0.85
+          },
+          ["fluid-turret"] = {
+            b = 0.1,
+            g = 0.46000000000000005,
+            r = 0.92000000000000011
+          },
+          gate = {
+            b = 0.5,
+            g = 0.5,
+            r = 0.5
+          },
+          ["solar-panel"] = {
+            b = 0.14000000000000002,
+            g = 0.13,
+            r = 0.12
+          },
+          splitter = {
+            b = 0,
+            g = 0.81999999999999993,
+            r = 1
+          },
+          ["transport-belt"] = {
+            b = 0.28000000000000004,
+            g = 0.62999999999999998,
+            r = 0.8
+          },
+          ["underground-belt"] = {
+            b = 0,
+            g = 0.46000000000000005,
+            r = 0.56000000000000005
+          },
+          wall = {
+            b = 0.75,
+            g = 0.8,
+            r = 0.75
+          }
+        },
+        electric_line_minimum_absolute_width = 2,
+        electric_line_width = 1.5,
+        electric_lines_color = {
+          a = 255,
+          b = 255,
+          g = 212,
+          r = 0
+        },
+        electric_lines_color_switch_disabled = {
+          a = 255,
+          b = 0,
+          g = 0,
+          r = 255
+        },
+        electric_lines_color_switch_enabled = {
+          a = 255,
+          b = 0,
+          g = 255,
+          r = 0
+        },
+        electric_power_pole_color = {
+          a = 255,
+          b = 163,
+          g = 158,
+          r = 0
+        },
+        explosion_visualization_duration = 48,
+        green_signal_color = {
+          b = 0,
+          g = 1,
+          r = 0
+        },
+        rail_color = {
+          b = 0.55,
+          g = 0.55,
+          r = 0.55
+        },
+        red_signal_color = {
+          b = 0,
+          g = 0,
+          r = 1
+        }
