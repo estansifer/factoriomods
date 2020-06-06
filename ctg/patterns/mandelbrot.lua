@@ -1,6 +1,16 @@
 -- Creates a Mandelbrot set
 -- The set is bounded within about -size to size/2 along the x-axis,
 -- and -1.2 * size to 1.2 * size along the y-axis.
+--
+-- Width / height of Mandelbrot set:
+--      https://math.stackexchange.com/questions/936462/supremum-of-all-y-coordinates-of-the-mandelbrot-set
+--      https://www.reddit.com/r/math/comments/3vzsbh/how_are_pixel_dimensions_of_mandelbrot_set/
+--
+--  width: from x = -2 to x = 0.471185334933396
+--  height: y goes to +/- 1.12275706363259748461604158116265882079904682664638092967742378016679413783606239593843344659123247751651
+-- However, in practice the very distant points are on thin filaments that
+-- the low resolution of the Factorio terrain will never render, so a limit
+-- on the y-axis from -0.85 to 0.85 should be good enough.
 function Mandelbrot(size)
     local s = size or 100
     local maxiter = 100

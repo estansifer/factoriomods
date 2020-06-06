@@ -28,7 +28,7 @@ former the code to read these recordings and create screenshots and movies.
 
 Run
 
-    python maketimelapse.py
+    python run.py
 
 to make a movie of your most recent game, with a screenshot of the end state.
 
@@ -109,6 +109,13 @@ If you have ffmpeg installed, you can add music to your movie by running:
 
 Note that if the music is shorter than your movie, your movie will be truncated
 due to the "-shortest" option.
+
+## Examples
+
+A timelapse of a two hour game: youtube.com/watch?v=WagzSpVY4QA
+
+From a much older version of the mod, here is a timelapse of a 50 hour game:
+youtube.com/watch?v=Iz-BazXtDbs
 
 ## Version changes
 

@@ -10,9 +10,9 @@ land, water, and void cells at the start of a new game.
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.4.3
+ * Version 0.4.4
  * Initial release: 2016-03-15
- * Current release: 2019-04-29
+ * Current release: 2020-02-02
 
 ## Important notes
 
@@ -283,6 +283,8 @@ Optional parameters have their default values indicated.
 
 ## Versions
 
+ * 0.4.4
+    * Updated for Factorio 0.18
  * 0.4.3
     * Fixed bug in Maze1; thanks moldj for the detailed bug report.
  * 0.4.2

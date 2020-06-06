@@ -1,7 +1,7 @@
 {
     "name": "heavy-inventory",
-    "version": "0.0.5",
-    "factorio_version": "0.17",
+    "version": "0.0.6",
+    "factorio_version": "0.18",
     "title": "Heavy Inventory",
     "author": "Eric Stansifer",
     "description": "Walking speed depends on inventory fullness",
