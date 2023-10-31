@@ -1,16 +1,12 @@
 require("simple")
 require("lib/rand")
 
-local function noop()
-    return nil
-end
-
 local tinsert = table.insert
 local M = math.pow(2, 26)
 -- Lua can represent integers exactly up to a bit more than M^2
 
-function Zoom(pattern, f)
-    local factor = f or 16
+function Zoom(pattern, factor)
+    factor = factor or 16
     local pget = pattern.get
 
     local function get(x, y)
@@ -22,6 +18,7 @@ function Zoom(pattern, f)
 end
 
 function Tighten(pattern)
+    assert(pattern.output == "bool")
     local pget = pattern.get
 
     local function get(x, y)
@@ -31,6 +28,7 @@ function Tighten(pattern)
 end
 
 function FullTighten(pattern)
+    assert(pattern.output == "bool")
     local pget = pattern.get
 
     local function get(x, y)
@@ -41,23 +39,62 @@ end
 
 function Not(pattern)
     local pget = pattern.get
+    local get
+
+    if pattern.output == "bool" then
+        get = function(x, y) return not pget(x, y) end
+    elseif pattern.output == "height" then
+        get = function(x, y) return -pget(x, y) end
+    else
+        assert(false)
+    end
+
+    return {create = pattern.create, reload = pattern.reload, get = get, output = pattern.output}
+end
+
+function If(pattern, yes, no)
+    assert(pattern.output == 'bool')
+    assert(yes.output == no.output)
+    local pget = pattern.get
+    local yget = yes.get
+    local nget = no.get
+
+    local function create()
+        local data = {}
+        data.pattern = pattern.create()
+        data.yes = yes.create()
+        data.no = no.create()
+        return data
+    end
+
+    local function reload(data)
+        pattern.reload(data.pattern)
+        yes.reload(data.yes)
+        no.reload(data.no)
+    end
 
     local function get(x, y)
-        return not pget(x, y)
+        if pget(x, y) then
+            return yget(x, y)
+        else
+            return nget(x, y)
+        end
     end
-    return {create = pattern.create, reload = pattern.reload, get = get, output = "bool"}
+
+    return {create = create, reload = reload, get = get, output = yes.output}
 end
 
 -- Takes any number of patterns. Either all patterns must output "bool", or "float". If no patterns
 -- are given, "bool" is assumed. For float, takes maximum.
-function Union(...)
+function Or(...)
     local n = select('#', ...)
     local patterns = {...}
     if n == 0 then
-        return NoLand()
+        return False
     elseif n == 1 then
         return patterns[1]
     end
+    local o = same_output(patterns)
 
     local function create()
         local d = {}
@@ -75,7 +112,7 @@ function Union(...)
 
     local get
 
-    if patterns[1].output == "bool" then
+    if o == "bool" then
         get = function(x, y)
             for _, p in ipairs(patterns) do
                 if p.get(x, y) then
@@ -84,7 +121,7 @@ function Union(...)
             end
             return false
         end
-    else
+    elseif o == "height" then
         get = function(x, y)
             local m = -999999
             for _, p in ipairs(patterns) do
@@ -92,20 +129,23 @@ function Union(...)
             end
             return m
         end
+    else
+        assert(false)
     end
 
-    return {create = create, reload = reload, get = get, output = patterns[1].output}
+    return {create = create, reload = reload, get = get, output = o}
 end
 
 -- See Union. For "float", takes the minimum.
-function Intersection(...)
+function And(...)
     local n = select('#', ...)
     local patterns = {...}
     if n == 0 then
-        return AllLand()
+        return True
     elseif n == 1 then
         return patterns[1]
     end
+    local o = same_output(patterns)
 
     local function create()
         local d = {}
@@ -123,7 +163,7 @@ function Intersection(...)
 
     local get
 
-    if patterns[1].output == "bool" then
+    if o == "bool" then
         get = function(x, y)
             for _, p in ipairs(patterns) do
                 if not p.get(x, y) then
@@ -132,7 +172,7 @@ function Intersection(...)
             end
             return true
         end
-    else
+    elseif o == "height" then
         get = function(x, y)
             local m = 999999
             for _, p in ipairs(patterns) do
@@ -140,9 +180,141 @@ function Intersection(...)
             end
             return m
         end
+    else
+        assert(false)
     end
 
-    return {create = create, reload = reload, get = get, output = patterns[1].output}
+    return {create = create, reload = reload, get = get, output = o}
+end
+
+Union = Or
+Max = Or
+Intersection = And
+Min = And
+
+function Sum(...)
+    local n = select('#', ...)
+    local patterns = {...}
+    if n == 0 then
+        return Zero()
+    elseif n == 1 then
+        return patterns[1]
+    end
+    local o = same_output(patterns)
+    assert(o == 'height')
+
+    local function create()
+        local d = {}
+        for i, p in ipairs(patterns) do
+            d[i] = p.create()
+        end
+        return d
+    end
+
+    local function reload(d)
+        for i, p in ipairs(patterns) do
+            p.reload(d[i])
+        end
+    end
+
+    local function get(x, y)
+        local s = 0
+        for _, p in ipairs(patterns) do
+            s = s + p.get(x, y)
+        end
+        return s
+    end
+
+    return {create = create, reload = reload, get = get, output = 'height'}
+end
+
+function Product(...)
+    local n = select('#', ...)
+    local patterns = {...}
+    if n == 0 then
+        return One()
+    elseif n == 1 then
+        return patterns[1]
+    end
+    local o = same_output(patterns)
+    assert(o == 'height')
+
+    local function create()
+        local d = {}
+        for i, p in ipairs(patterns) do
+            d[i] = p.create()
+        end
+        return d
+    end
+
+    local function reload(d)
+        for i, p in ipairs(patterns) do
+            p.reload(d[i])
+        end
+    end
+
+    local function get(x, y)
+        local a = 1
+        for _, p in ipairs(patterns) do
+            a = a * p.get(x, y)
+        end
+        return a
+    end
+
+    return {create = create, reload = reload, get = get, output = 'height'}
+end
+
+function Subtract(p1, p2)
+    assert(p1.output == 'height')
+    assert(p2.output == 'height')
+
+    local function create()
+        local d = {}
+        d[1] = p1.create()
+        d[2] = p2.create()
+        return d
+    end
+
+    local function reload(d)
+        p1.reload(d[1])
+        p2.reload(d[2])
+    end
+
+    local p1get = p1.get
+    local p2get = p2.get
+
+    local function get(x, y)
+        return p1get(x, y) - p2get(x, y)
+    end
+
+    return {create = create, reload = reload, get = get, output = 'height'}
+end
+
+function Clip(pattern, low, high)
+    assert(pattern.output == 'height')
+    local pget = pattern.get
+    local get
+    if low == nil then
+        if high == nil then
+            return pattern
+        else
+            get = function (x, y)
+                return math.min(pget(x, y), high)
+            end
+        end
+    else
+        if high == nil then
+            get = function (x, y)
+                return math.max(pget(x, y), low)
+            end
+        else
+            assert(low < high)
+            get = function (x, y)
+                return math.max(math.min(pget(x, y), high), low)
+            end
+        end
+    end
+    return {create = pattern.create, reload = pattern.reload, get = get, output = 'height'}
 end
 
 -- Shifts the given pattern by dx to the right and dy up
@@ -173,11 +345,11 @@ end
 
 function Affine(pattern, a, b, c, d, dx, dy)
     local pget = pattern.get
-    local dx_ = dx or 0
-    local dy_ = dy or 0
+    dx = dx or 0
+    dy = dy or 0
 
     local function get(x, y)
-        return pget(a * x + b * y + dx_, c * x + d * y + dy_)
+        return pget(a * x + b * y + dx, c * x + d * y + dy)
     end
 
     return {create = pattern.create, reload = pattern.reload,
@@ -187,13 +359,14 @@ end
 -- Tiles the plane with the contents of the given pattern from [xlow, xhigh) x [ylow, yhigh)
 function Tile(pattern, xhigh, yhigh, xlow, ylow)
     local pget = pattern.get
-    local xl = xlow or 0
-    local yl = ylow or 0
-    local dx = xhigh - xl
-    local dy = yhigh - yl
+    yhigh = yhigh or xhigh
+    xlow = xlow or 0
+    ylow = ylow or 0
+    local dx = xhigh - xlow
+    local dy = yhigh - ylow
 
     local function get(x, y)
-        return pget(((x - xl) % dx) + xl, ((y - yl) % dy) + yl)
+        return pget(((x - xlow) % dx) + xlow, ((y - ylow) % dy) + ylow)
     end
 
     return {create = pattern.create, reload = pattern.reload,
@@ -202,11 +375,11 @@ end
 
 function Tilex(pattern, xhigh, xlow)
     local pget = pattern.get
-    local xl = xlow or 0
-    local dx = xhigh - xl
+    xlow = xlow or 0
+    local dx = xhigh - xlow
 
     local function get(x, y)
-        return pget(((x - xl) % dx) + xl, y)
+        return pget(((x - xlow) % dx) + xlow, y)
     end
 
     return {create = pattern.create, reload = pattern.reload,
@@ -215,11 +388,11 @@ end
 
 function Tiley(pattern, yhigh, ylow)
     local pget = pattern.get
-    local yl = ylow or 0
-    local dy = yhigh - yl
+    ylow = ylow or 0
+    local dy = yhigh - ylow
 
     local function get(x, y)
-        return pget(x, ((y - yl) % dy) + yl)
+        return pget(x, ((y - ylow) % dy) + ylow)
     end
 
     return {create = pattern.create, reload = pattern.reload,

@@ -1,5 +1,8 @@
 -- Returns a random number from 0 to 1 for each (x, y) spot
 
+
+-- Don't use this any more, results are non-deterministic
+
 local M = math.pow(2, 12)
 
 function RandGrid()

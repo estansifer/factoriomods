@@ -1,6 +1,6 @@
 local append = table.insert
 
-logversion = '0.0.1'
+logversion = '0.0.2'
 
 function Logger(filename)
     local logger = {filename, {}, 0}

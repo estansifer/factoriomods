@@ -1,21 +1,9 @@
 require("simple")
 require("lib/fft")
 require("lib/rand")
+require("lib/normal")
 
 local tau = 2 * math.pi
-
--- To compute the inverse CDF of the normal distribution, use
--- sqrt(2) * erfinv(2 * x - 1)
-local function erfinv(x)
-    local l = math.log((1 - x) * (1 + x))
-    local t1 = 2 / (math.pi * 0.147) + l / 2
-    local res = math.sqrt(-t1 + math.sqrt(t1 * t1 - l / 0.147))
-    if x < 0 then
-        return -res
-    else
-        return res
-    end
-end
 
 local function default(t, k, v)
     if t == nil or t[k] == nil then
@@ -201,9 +189,6 @@ end
 -- All defults:
 --  Noise({
 --          power = (must be specified),
---          land_percent = 0.5,
---          start_on_land = true,
---          start_on_beach = true,
 --          wavelength_min = 2,
 --          wavelength_max = 10000
 --      })
@@ -219,23 +204,50 @@ function Noise(options)
         options = {}
     end
 
-    local land_percent = default(options, "land_percent", 0.5)
-    if land_percent > 0.999 then
-        return AllLand()
+    local mean = default(options, 'mean', 0)
+    local stddev = default(options, 'stddev', 1)
+    assert(stddev > 0)
+    if options.zero_percentile ~= nil then
+        local zp = options.zero_percentile
+        assert(zp > 0.01)
+        assert(zp < 0.99)
+        mean = -normal_invcdf(zp) * stddev
     end
-    if land_percent < 0.001 then
-        return NoLand()
-    end
-    -- For a Gaussian distribution with mean 0 and variance 1, the fraction of
-    -- the time it is above thresh equals land_pct.
-    local thresh1 = math.sqrt(2) * erfinv(1 - 2 * land_percent)
 
-    local start_on_land = default(options, "start_on_land", true)
-    local start_on_beach = default(options, "start_on_beach", true)
+    if options.start_beach == true then
+        if options.zero_percentile == nil then
+            options.start_above_area = 0.5
+            options.start_below_area = 0.55
+        else
+            options.start_above_area = math.min(options.zero_percentile, 0.97)
+            options.start_below_area = math.min(options.zero_percentile + 0.05, 0.99)
+            -- print('A', options.start_below_area, options.start_above_area)
+        end
+    end
+
+    if options.start_above_area ~= nil then
+        assert(options.start_above_area > 0)
+        assert(options.start_above_area < 0.99)
+        options.start_above = mean + stddev * normal_invcdf(options.start_above_area)
+    end
+    if options.start_below_area ~= nil then
+        assert(options.start_below_area > 0.01)
+        assert(options.start_below_area < 1)
+        options.start_below = mean + stddev * normal_invcdf(options.start_below_area)
+        if options.start_above_area ~= nil then
+            -- print('B', options.start_below_area, options.start_above_area, stddev)
+            assert(options.start_above_area + stddev * 0.009 < options.start_below_area)
+        end
+    end
+
+    local start_above = default(options, "start_above", mean - 99)
+    local start_below = default(options, "start_below", mean + 99)
+    assert(start_above < mean + stddev * 3.5)
+    assert(start_below > mean - stddev * 3.5)
+    assert(start_above + stddev * 0.009 < start_below)
+
     local wavelength_min = default(options, "wavelength_min", 2)
     local wavelength_max = default(options, "wavelength_max", 10000)
-    local n1 = default(options, "n1", 1)
-    local n2 = default(options, "n2", -1)
     local power = options["power"]
 
     if wavelength_min < 2 then
@@ -256,12 +268,6 @@ function Noise(options)
     local zooms = grid_schema[4]
     local ngrids = #Ms
     -- print(serpent.block(grid_schema))
-
-    local n1 = default(options, "n1", 1)
-    local n2 = default(options, "n2", -1)
-    if n2 < n1 then
-        n2 = ngrids
-    end
 
     local griddata = {}
     griddata.grids = {}
@@ -316,23 +322,24 @@ function Noise(options)
         build_data()
     end
 
-    local function remake_some_grids(count)
-        for i = 1, ngrids do
-            if (count % (1 + 3 * (ngrids - i))) == 0 then
-                make_grid(i)
-            end
-        end
-        compute_stddev()
-    end
+    -- local function remake_some_grids(count)
+        -- for i = 1, ngrids do
+            -- if (count % (1 + 3 * (ngrids - i))) == 0 then
+                -- make_grid(i)
+            -- end
+        -- end
+        -- compute_stddev()
+    -- end
 
     -- x, y must be integers
-    local function height(x, y)
+    local function geti(x, y)
         x = x + data.dx
         y = y + data.dy
         local h = 0
         local z, j, dx, dy, M
 
-        for i = n1, n2 do
+        -- for i = n1, n2 do
+        for i = 1, ngrids do
             z = zooms[i]
             M = Ms[i]
             if z == 1 then
@@ -349,11 +356,7 @@ function Noise(options)
             end
         end
 
-        return h / griddata.stddev
-    end
-
-    local function geti(x, y)
-        return height(x, y) > thresh1
+        return mean + h * stddev / griddata.stddev
     end
 
     local function get(x, y)
@@ -361,14 +364,8 @@ function Noise(options)
     end
 
     local function verify_ok()
-        dh = height(0, 0) - thresh1
-        if start_on_beach then
-            return dh > 0 and dh < 0.1
-        end
-        if start_on_land then
-            return dh > 0
-        end
-        return true
+        local h = geti(0, 0)
+        return (h > start_above) and (h < start_below)
     end
 
     local function height_distribution()
@@ -394,19 +391,20 @@ function Noise(options)
         end
         print(s / M)
         print(ss / M - (s / M) * (s / M))
-        print(thresh1)
     end
 
     local function create()
         local rng = new_rng()
-        local num_attempts = 0
-        local max_attempts = 1000
+        init(rng)
+        local num_attempts = 1
+        local max_attempts = 10000
         repeat
-            if num_attempts % 100 == 0 then
+            if num_attempts > 500 then
+                start_below = start_below + 0.01
+                start_above = start_above - 0.01
+            end
+            if num_attempts % 1000 == 0 then
                 init(rng)
-                if num_attempts > 400 then
-                    start_on_beach = false
-                end
             else
                 randomize_starting_square(rng)
             end
@@ -429,7 +427,7 @@ function Noise(options)
         create = create,
         reload = reload,
         get = get,
-        output = "bool"
+        output = "height"
     }
 end
 

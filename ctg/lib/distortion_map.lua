@@ -145,6 +145,7 @@ function DistortionMap(interpolate_, perlin_, maxstepsize_, integration_time_, k
     return {
         create = create,
         reload = reload,
-        get = get
+        get = get,
+        output = 'vector'
     }
 end

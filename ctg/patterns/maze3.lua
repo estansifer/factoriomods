@@ -8,9 +8,7 @@ function Maze3(t, v)
     local max_attempts = 1000
     local initial_range = 100
 
-    -- do not change this number unless you know what you are doing
-    -- values greater than 0.59274621 are fine
-    -- lower than that is bad
+    -- do not change this number
     -- https://en.wikipedia.org/wiki/Percolation_threshold
     local criticalvalue = 0.59274621
     local threshhold = t or 0.6

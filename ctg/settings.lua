@@ -30,9 +30,9 @@ data:extend{
     },
     {
         type                = 'bool-setting',
-        name                = 'ctg-remove-default-water',
+        name                = 'ctg-use-default-water',
         setting_type        = 'startup',
-        default_value       = true,
+        default_value       = false,
         order               = 'ctg-s001'
     }
 }

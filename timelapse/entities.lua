@@ -1,7 +1,7 @@
 require('logger')
 require('names')
 
--- Does both entites and resources
+-- Does both entities and resources
 
 local whitelist = {
         'accumulator',

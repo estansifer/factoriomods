@@ -8,7 +8,7 @@ require("transforms")
 function KroneckerProduct(p1, p2, sizex, sizey)
     local p1get = p1.get
     local p2get = p2.get
-    local sizey = sizey or sizex
+    sizey = sizey or sizex
 
     local function create()
         return {p1.create(), p2.create()}
@@ -42,9 +42,11 @@ end
 -- Same, but now we add a gap of size bridgelength between each region. This gap is
 -- filled with a bridge of the indicated width when two adjacent cells both have land.
 function Islandify(p1, p2, sizex, sizey, bridgelength, bridgewidth)
+    assert(p1.output == 'bool')
+    assert(p2.output == 'bool')
     local p1get = p1.get
     local p2get = p2.get
-    local sizey = sizey or sizex
+    sizey = sizey or sizex
     local l = bridgelength or 48
     local w = bridgewidth or 2
 
@@ -69,25 +71,19 @@ function Islandify(p1, p2, sizex, sizey, bridgelength, bridgewidth)
                 -- What a mess!
                 if math.abs(y2 - (sizey / 2) + 0.25) * 2 < w then
                     if x2 > (sizex / 2) then
-                        if p1get(x1 + 1, y1) then
-                            return true
-                        end
+                        return p1get(x1 + 1, y1)
                     else
-                        if p1get(x1 - 1, y1) then
-                            return true
-                        end
+                        assert(false)
+                        return p1get(x1 - 1, y1)
                     end
                 end
 
                 if math.abs(x2 - (sizex / 2) + 0.25) * 2 < w then
                     if y2 > (sizey / 2) then
-                        if p1get(x1, y1 + 1) then
-                            return true
-                        end
+                        return p1get(x1, y1 + 1)
                     else
-                        if p1get(x1, y1 - 1) then
-                            return true
-                        end
+                        assert(false)
+                        return p1get(x1, y1 - 1)
                     end
                 end
             end
@@ -108,7 +104,7 @@ function SquaresAndBridges(islandradius, bridgelength, bridgewidth)
     local r = islandradius or 32
     local l = bridgelength or 48
     local w = bridgewidth or 2
-    return Islandify(AllLand(), AllLand(), 2 * r, 2 * r, l, w)
+    return Islandify(True(), True(), 2 * r, 2 * r, l, w)
 end
 
 -- Makes a pattern with a bunch of circular islands connected by bridges.
@@ -116,7 +112,7 @@ function CirclesAndBridges(islandradius, bridgelength, bridgewidth)
     local r = islandradius or 32
     local l = bridgelength or 48
     local w = bridgewidth or 2
-    return Islandify(AllLand(), Translate(Circle(r), r, r), 2 * r, 2 * r, l, w)
+    return Islandify(True(), Translate(Circle(r), r, r), 2 * r, 2 * r, l, w)
 end
 
 -- This pattern is based on an idea and code by Donovan Hawkins:
@@ -125,7 +121,7 @@ function IslandifySquares(pattern, islandradius, bridgelength, bridgewidth)
     local r = islandradius or 32
     local l = bridgelength or 48
     local w = bridgewidth or 2
-    return Islandify(pattern, AllLand(), 2 * r, 2 * r, l, w)
+    return Islandify(pattern, True(), 2 * r, 2 * r, l, w)
 end
 
 -- Suggested by EldVarg

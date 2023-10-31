@@ -21,6 +21,11 @@ function Maze2()
             y = 0
         end
 
+        -- Ways this could have been avoided:
+        --      If Lua had a separate integer and floating type
+        --      If Lua serialized -0 sensibly
+        --      If Lua had a data structure that was a valid key for a table
+
         return x .. '#' .. y
     end
 

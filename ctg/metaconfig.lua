@@ -1,5 +1,5 @@
 meta = {
-    water_colors    = {"blue", "green"},
+    -- water_colors    = {"blue", "green"},
     setting_type    = "runtime-global",
     -- List of pairs of name of preset and code to generate preset
     pattern_presets = {
@@ -8,27 +8,37 @@ meta = {
             {"arithmetic spiral", "ArithmeticSpiral(50, 0.4)"},
             {"rectilinear spiral", "Zoom(RectSpiral(), 50)"},
             {"triple spiral", "AngularRepeat(Spiral(1.6, 0.5), 3)"},
-            {"crossing spirals", "Union(Spiral(1.4, 0.4), Spiral(1 / 1.6, 0.2))"},
+            {"crossing spirals", "Union(Spiral(1.4, 0.4), Spiral(1 / 2.5, 0.15))"},
+            -- {"crossing spirals", "Union(Spiral(1.4, 0.4), Spiral(1 / 1.6, 0.2))"},
+            {"natural", "HF(NoiseExponent{exponent=1.8})"},
+            {"natural with shallow water",
+            "HF{pattern=NoiseExponent{exponent=1.8}," ..
+            "areas={DeepWater(),0.1, Water(), 0.15, ShallowishWater(), 0.18, ShallowWater(), 0.2, Land()}}"},
+            {"mud flats",
+            "HF{pattern=NoiseCustom{exponent=1,start_above_area=0.989,noise=" ..
+            "{0,0.01,0.05,1,6,9,3,0,0}}," ..
+            "areas={DeepWater(),0.2,Water(),0.6,ShallowishWater(),0.86,ShallowWater(),0.91,Land()}}"},
             {"natural archipelago",
-                -- "NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.13})"},
-                "Union(" ..
-                "NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.07})," ..
-                "NoiseCustom({exponent=1.9,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.1," ..
-                "start_on_land=false,start_on_beach=false}))"},
+                -- "NoiseCustom({exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},land_percent=0.13})",
+                "HF(Max(" ..
+                "NoiseCustom{exponent=1.5,noise={0.3,0.4,1,1,1.2,0.8,0.7,0.4,0.3,0.2},zero_percentile=0.93,start_beach=true}," ..
+                "NoiseCustom{exponent=1.9,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},zero_percentile=0.9}))"},
             {"natural big islands",
-                "NoiseCustom({exponent=2.3,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.2})"},
+                "HF(NoiseCustom{exponent=2.3,noise={1,1,1,1,1,1,0.7,0.4,0.3,0.2},zero_percentile=0.8,start_beach=true})"},
             {"natural continents",
-                "NoiseCustom({exponent=2.4,noise={1,1,1,1,1,1,1,0.6,0.3,0.2},land_percent=0.35})"},
+                "HF(NoiseCustom{exponent=2.4,noise={1,1,1,1,1,1,1,0.6,0.3,0.2},zero_percentile=0.65,start_beach=true})"},
             {"natural half land",
-                "NoiseCustom({exponent=2,noise={0.5,1,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.5})"},
+                "HF(NoiseCustom{exponent=2,noise={0.5,1,1,1,1,1,0.7,0.4,0.3,0.2},start_beach=true})"},
             {"natural big lakes",
-                "NoiseCustom({exponent=2.3,noise={0.5,0.8,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.65})"},
+                "HF(NoiseCustom{exponent=2.3,noise={0.5,0.8,1,1,1,1,0.7,0.4,0.3,0.2},zero_percentile=0.35,start_beach=true})"},
             {"natural medium lakes",
-                "NoiseCustom({exponent=2.1,noise={0.3,0.6,1,1,1,1,0.7,0.4,0.3,0.2},land_percent=0.86})"},
+                "HF(NoiseCustom{exponent=2.1,noise={0.3,0.6,1,1,1,1,0.7,0.4,0.3,0.2},zero_percentile=0.14,start_beach=true})"},
             {"natural small lakes",
-                -- "NoiseCustom({exponent=1.8,noise={0.2,0.3,0.4,0.6,1,1,0.7,0.4,0.3,0.2},land_percent=0.96})"},
-                "NoiseCustom({exponent=1.5,noise={0.05,0.1,0.4,0.7,1,0.7,0.3,0.1},land_percent=0.92})"},
-            {"pink noise (good luck...)", "NoiseExponent({exponent=1,land_percent = 0.35})"},
+                -- "NoiseCustom({exponent=1.8,noise={0.2,0.3,0.4,0.6,1,1,0.7,0.4,0.3,0.2},land_percent=0.96})",
+                "HF(NoiseCustom{exponent=1.5,noise={0.05,0.1,0.4,0.7,1,0.7,0.3,0.1},zero_percentile=0.08,start_beach=true})"},
+            {"pink noise (good luck...)", "HF(NoiseExponent{exponent=1,zero_percentile=0.65,start_beach=true})"},
+            {"sierpinski carpet", "SierpinskiCarpet(7)"},
+            {"world map", "Zoom(Translate(WorldMap(), -1238, -315), 4)"},
             {"radioactive", "Union(AngularRepeat(Halfplane(), 3), Circle(38))"},
             {"comb", "Zoom(Comb(), 50)"},
             {"cross", "Cross(50)"},
@@ -46,15 +56,10 @@ meta = {
             {"mandelbrot", "Tile(Mandelbrot(300), 150, 315, -600, -315)"},
             {"jigsaw islands", "Zoom(JigsawIslands(0.3), 40)"},
             {"pink noise maze",
-                "Intersection(Zoom(Maze2(), 50), NoiseExponent{exponent=1,land_percent=0.8})"},
-            {"tiny pot holes", "TP(nil, Zoom(Maze3(0.997), 2))"},
-            {"small pot holes", "TP(nil, Zoom(Maze3(0.994), 3))"}
+                "Intersection(Zoom(Maze2(), 50), HF{pattern = NoiseExponent{exponent=1,zero_percentile=0.2,start_beach=true}, heights={False(), 0, True()}})"},
+            {"tiny pot holes", "TP(nil, Zoom(Maze3(0.003, false), 2))"},
+            {"small pot holes", "TP(nil, Zoom(Maze3(0.006, false), 3))"}
     }
-    -- void_pattern_presets = {
-            -- {"tiny pot holes", "Maze3(0.997)"},
-            -- {"small pot holes", "Zoom(Maze3(0.994), 3)"},
-            -- {"custom", nil}
-    -- }
 }
 
 function preset_by_name(name)
@@ -108,7 +113,7 @@ meta.settings = {
     mk_str("pattern-v7", "nil"),
     mk_str("pattern-v8", "nil"),
 
-    mk_dropdown("water-color", meta.water_colors),
+    -- mk_dropdown("water-color", meta.water_colors),
     mk_int("seed", 0, {0, 2 ^ 32}),
 
     mk_bool("initial-landfill", false),

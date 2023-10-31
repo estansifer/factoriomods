@@ -1659,7 +1659,17 @@ enemy_names = [
         'spitter-spawner',
         'small-worm-turret',
         'medium-worm-turret',
+        'big-worm-turret',
         'behemoth-worm-turret']
+
+land_names = [
+        'landfill',
+        'grass-1',
+        'grass-4',
+        'dirt-4',
+        'red-desert-1',
+        'stone-path'
+    ]
 
 # default = [40, 180, 255]
 default_color = [0, 97, 145]
@@ -1674,8 +1684,6 @@ fixed_colors = {
         'grid lines' : [130, 20, 20],
         'water debug' : [70, 20, 130],
         'land debug' : [70, 130, 20],
-        'grass-1' : land,
-        'landfill' : land,
         'straight-rail' : rail,
         'curved-rail' : rail,
         'player' : player,
@@ -1686,6 +1694,7 @@ fixed_colors = {
         'solar-panel' : solar_panel,
         'accumulator' : accumulator,
         'stone-wall' : wall,
+        'gate' : wall,
 
         'gun-turret' : turret,
         'electric-turret' : turret,
@@ -1732,6 +1741,8 @@ fixed_colors = {
 def name2color(name):
     if name in fixed_colors:
         return fixed_colors[name]
+    if name in land_names:
+        return land
     if name in enemy_names:
         return enemy
 

@@ -10,18 +10,15 @@ land, water, and void cells at the start of a new game.
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.4.4
+ * Version 0.5.0
  * Initial release: 2016-03-15
- * Current release: 2020-02-02
+ * Current release: 2022-02-02
 
 ## Important notes
 
  * This mod remembers all runtime settings on a per-save basis. Only the settings enabled
- when the game is first begun matter, and there is no need to synchronize settings for
- multiplayer.
- * If you enable this mod and then load a save that did not originally have this mod
- enabled, the mod will do nothing and no water will be generated any more. A warning will
- be printed.
+ when the game is first begun matter.
+ * Don't enable this mod on a game partway through.
  * It is hard to thoroughly test the accuracy of the many possible settings, especially
  for saving / loading, so please let me know if you encounter any bugs so I can fix
  them as quickly as possible.
@@ -34,9 +31,9 @@ to combine them in many ways or write your own algorithm.
 
 ## Screenshots
 
- [screenshots](https://imgur.com/a/C2pFsf8)
+ Also, [old screenshots](https://imgur.com/a/C2pFsf8)
 
- Just for fun, [very old screenshots](https://imgur.com/a/wptLh).
+ Also, [very old screenshots](https://imgur.com/a/wptLh).
 
 ## How to use
 
@@ -51,7 +48,7 @@ found above.
  wish to use a custom pattern that does not. In this case, the `Force starting water` option
  puts a puddle next to your starting location to make the game playable.
 
-## Testing options
+### Scanning options
 
  * `Big scan` scans everything within 1024 of your starting location; it takes several minutes
  to finish. For computationally expensive patterns, the game may be laggy while this is
@@ -64,7 +61,21 @@ found above.
  5. If you plan on investing a lot of time on a random map, you may wish to do this to make sure
  your map is reasonable before you begin the game.
 
-## Void cells
+### Going beyond just land and water
+
+Most of the patterns just control where land and water is placed. For this reason, by default
+the mod suppresses Factorio's built-in water generation.
+
+However, you may want to do other things, like use this mod to scatter random void cells, or
+put a concrete road running along the x-axis, but still use Factorio's built-in water
+generation. If so, check the relevant start up option. When this mod "places land", what it
+actually does is leave the tile however Factorio generated it.
+
+If for some reason you wish to explicitly place land tiles, you need to specify which specific
+land tiles you want to place, using a pattern like `Constant('grass-4')` or `Constant('nuclear-ground')` etc. A complete list of available Factorio tile names is at
+https://mods.factorio.com/mod/TilePrototypeViewer ; click on the preview image to enlarge.
+
+### Void cells
 
 Void cells are black squares that are impassable and cannot be landfilled. To generate void cells,
 use the `custom` option as described in the next section, and use the pattern
@@ -281,78 +292,9 @@ Optional parameters have their default values indicated.
  * The `distort` transformation may get improved in the future, but I find that the Noise pattern
  does better at accomplishing roughly the same goal.
 
-## Versions
+ * World map found at https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Perlshaper_Winkel-Tripel_example1.svg/2560px-Perlshaper_Winkel-Tripel_example1.svg.png
 
- * 0.4.4
-    * Updated for Factorio 0.18
- * 0.4.3
-    * Fixed bug in Maze1; thanks moldj for the detailed bug report.
- * 0.4.2
-    * No change except for a specific save file.
- * 0.4.1
-    * Fixed bug in the variables v1 - v8 not working for custom patterns.
-    * Slightly tweaked behavior of Cross, Strip, Comb, Grid, and Checkerboard, resolving
-    problem with Cross and Strip only generating odd widths.
- * 0.4.0
-    * Updated for Factorio 0.17
-    * It is now possible to set a seed so that you can produce the same terrain on different playthroughs.
-    * All patterns except JigsawIslands have been adjusted so that terrain generation no longer
-    depends on what order you explore the terrain in.
-    * Screenshotting bugfix.
-    * Fixed artifact in Zoom(RectGrid(), z) when the zoom level is a power of two; thanks
-    fessoric for the bug report.
- * 0.3.0
-    * Simplified the mod settings so that water and void generation are combined into one setting.
-    This makes setting up a map with no void slightly more streamlined, and also allows for the
-    possibility of patterns that entangle the generation of water and void.
-    * Tweaked some of the suggested preset maps, particularly the "natural" maps
-    * Added the option to preserve Factorio's normal water generation, say for use with void maps.
-    * Added internal support for future planned features
- * 0.2.1
-    * Fixed bug in Maze3 / RandGrid; thanks Kent2007 for reporting the bug.
-    * Fixed misleading statement in README and warning message.
- * 0.2.0 Many changes:
-    * Updated for Factorio 0.16 (skipping 0.15)
-    * Rewrote all core code
-    * Now uses Factorio's built-in mod settings support
-    * Settings include a variety of suggested patterns, and ability to make custom patterns.
-    * Got rid of deep magic for storing mod settings on per-save basis. As of Factorio 0.15,
-    this was no longer necessary: now using ordinary magic.
-    * Support for voids
-    * Now warns if mod added after beginning of game
-    * Added option to start the game with a chest of landfill
-    * Created Noise, NoiseExponent, and NoiseCustom patterns, which create natural-looking landforms
-    * Created Fractal pattern, which creates fractals of arbitrary dimensions from 1 to 2
-    * Created ConcentricBarcode pattern, for random concentric circles of different thicknesses
-    * Created RectSpiral pattern
-    * Created Tilex and Tiley transforms
-    * Small improvements to JaggedIslands pattern
-    * Optimized Maze3 and Mandelbrot patterns
-    * Fixed bug in Tile pattern when not tiling from origin
-    * Fixed bug in saving of Union (and Intersection) if taking the union of a non-stateful pattern
-    with a stateful pattern, in that order.
-    * Many smaller changes
- * 0.1.1 Union and Intersection take any number of arguments instead of just two. Fixed bug
- in AllWater, thanks sintri on the forums for being the first person to find a bug. Added
- Rectangle pattern and changed Circle to take an optional center argument.
- * 0.1.0 Added Distort, Jitter, Checkerboard, AllLand, AllWater, Rotate, Affine, Tile,
- AngularRepeat, Invert, Smooth, KroneckerProduct, IslandifyCircles, SquaresAndBridges,
- and CirclesAndBridges patterns. Multiple backwards incompatible changes. Made compatible
- with Factorissimo. Fixed bug in loading games saved with JaggedIslands with non-default
- land ratio.
- * 0.0.9 Updated for Factorio 0.14.
- * 0.0.8 Updated for Factorio 0.13.
- * 0.0.7 Added Mandelbrot, JaggedIslands, and Barcode patterns.
- * 0.0.6 Partial re-write. Moved configuration to `config.lua`. Added several new patterns,
- including Spiral and Islandify. Most patterns renamed more sensibly. Total overhaul of saving
- and loading to address earlier limitations that made it impossible to load a game saved with
- certain especially complicated patterns.
- * 0.0.5 Removed dependency and fixed the version in info.json
- * 0.0.4 Rewrote islands pattern again to align it with railroad tracks in case of path width of 2.
- * 0.0.3 Bug fix with `big_scans` option in multiplayer
- * 0.0.2 Improved islands pattern, added no water option, added half and quarter plane options,
- added translate filter
- * 0.0.1 Initial release
+## Historical Note
 
 ## Known Issues
 

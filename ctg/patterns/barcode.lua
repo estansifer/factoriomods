@@ -4,10 +4,10 @@ require("lib/rand")
 -- landthickness / (sqrt(2) - 1) is the median thickness
 -- angle is in *degrees*
 function Barcode(angle, landthickness, waterthickness)
-    local l_ = landthickness or 20
-    local w_ = waterthickness or 50
-    local l = l_ / (math.sqrt(2) - 1)
-    local w = w_ / (math.sqrt(2) - 1)
+    landthickness = landthickness or 20
+    waterthickness = waterthickness or 50
+    local l = landthickness / (math.sqrt(2) - 1)
+    local w = waterthickness / (math.sqrt(2) - 1)
     if l < 3 then
         l = 3
     end
@@ -117,10 +117,10 @@ function Barcode(angle, landthickness, waterthickness)
 end
 
 function ConcentricBarcode(landthickness, waterthickness)
-    local l_ = landthickness or 20
-    local w_ = waterthickness or 50
-    local l = l_ / (math.sqrt(2) - 1)
-    local w = w_ / (math.sqrt(2) - 1)
+    landthickness = landthickness or 20
+    waterthickness = waterthickness or 50
+    local l = landthickness / (math.sqrt(2) - 1)
+    local w = waterthickness / (math.sqrt(2) - 1)
     if l < 3 then
         l = 3
     end

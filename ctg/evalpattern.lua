@@ -59,12 +59,10 @@ function evaluate_pattern(s)
         pattern = evaluate_pattern_with_context(preset)
     end
 
-    if pattern.output == "tilename" then
+    if pattern.output == 'tile' then
         return pattern
-    elseif pattern.output == "bool" then
-        return TP(pattern, nil, nil)
-    elseif pattern.output == "tileid" then
-        return TileID2Name(pattern, nil)
+    elseif pattern.output == 'bool' then
+        return TP(pattern)
     else
         return nil
     end
