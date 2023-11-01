@@ -18,15 +18,17 @@ end
 
 local function check_burden(event)
     local player = game.players[event.player_index]
-    local fullness = compute_fullness(player)
+    if player.character ~= nil then
+        local fullness = compute_fullness(player)
 
-    -- This value is *added* to 1 to make the player's true speed. So
-    -- if this value is set to 0, the player walks normally. At 1, the
-    -- player moves at double speed. At -1, the player cannot move at all.
-    --
-    -- When inventory is full, move at 1.5 times normal speed. When inventory
-    -- is empty, mvoe at 0.5 times normal speed.
-    player.character_running_speed_modifier = 0.5 - fullness
+        -- This value is *added* to 1 to make the player's true speed. So
+        -- if this value is set to 0, the player walks normally. At 1, the
+        -- player moves at double speed. At -1, the player cannot move at all.
+        --
+        -- When inventory is full, move at 1.5 times normal speed. When inventory
+        -- is empty, mvoe at 0.5 times normal speed.
+        player.character_running_speed_modifier = 0.5 - fullness
+    end
 end
 
 

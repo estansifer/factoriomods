@@ -7,6 +7,7 @@ the inventory is empty, the player walks 1.5 times the normal speed. Partial
 stacks of items have less effect than a full stack.
 
 ## Versions
+ * 0.0.8 Check player character exists
  * 0.0.7 Updated for Factorio 1.1
  * 0.0.6 Updated for Factorio 0.18
  * 0.0.5 Updated for Factorio 0.17.35

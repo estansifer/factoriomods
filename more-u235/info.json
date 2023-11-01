@@ -1,0 +1,9 @@
+{
+    "name": "more-u235",
+    "version": "0.0.1",
+    "factorio_version": "1.1",
+    "title": "More Uranium-235",
+    "author": "Eric Stansifer",
+    "description": "Increases ratio of U235 to U238 produced by uranium processing",
+    "dependencies": ["base"]
+}
