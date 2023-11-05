@@ -63,6 +63,8 @@ function evaluate_pattern(s)
         return pattern
     elseif pattern.output == 'bool' then
         return TP(pattern)
+    elseif pattern.output == 'height' then
+        return HF(pattern)
     else
         return nil
     end

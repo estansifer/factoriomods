@@ -4,6 +4,7 @@ require('spiral')
 require("maze1")
 require("maze2")
 require("maze3")
+require("maze4")
 require("mandelbrot")
 require("jigsawislands")
 require("barcode")
@@ -199,7 +200,7 @@ function HF(opts)
             end
             flag = not flag
         end
-        assert(flag, "areas should have odd length")
+        assert(flag, "'areas' should have odd length")
     else
         assert(opts.areas == nil, "Don't supply both 'heights' and 'areas'")
     end

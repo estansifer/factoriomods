@@ -43,6 +43,8 @@ local function on_load(event)
 end
 
 local function on_init(event)
+    local tp = nil
+
     global.enabled = settings.startup['ctg-enable'].value
     if not global.enabled then
         return
@@ -62,7 +64,7 @@ local function on_init(event)
     if global.enabled then
         init_global_rng(global.settings['seed'])
 
-        local tp = evaluate_pattern(global.settings)
+        tp = evaluate_pattern(global.settings)
         global.tp_data = tp.create()
         register_chunk_callback(tp)
     end
@@ -77,8 +79,8 @@ local function on_init(event)
     end
 
     if global.settings['screenshot'] then
-        -- takescreenshot(tp.get)
-        takescreenshot_slow()
+        takescreenshot(tp.get, 1)
+        -- takescreenshot_slow()
     end
 
     if global.settings['screenshot-zoom'] then

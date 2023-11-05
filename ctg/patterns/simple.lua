@@ -73,7 +73,7 @@ function NoiseLayer(layer, surface_name)
     local layers = {layer}
     local surface = game.surfaces[surface_name]
     local function get(x, y)
-        return surface.calculate_tile_properties(layers,{x, y})[layer][1]
+        return surface.calculate_tile_properties(layers, {{x, y}})[layer][1]
     end
     return {create = noop, reload = noop, get = get, output = 'height'}
 end
@@ -82,9 +82,13 @@ function Elevation(surface_name)
     return NoiseLayer('elevation', surface_name)
 end
 
-function Square(radius)
+-- function FactorioDefault()
+    -- return HF{Elevation(), heights = {DeepWater(), -3, Water(), 0, Land()}}
+-- end
+
+function Square(sidelength)
     local function get(x, y)
-        return x >= 0 and y >= 0 and x < radius and y < radius
+        return x >= 0 and y >= 0 and x < sidelength and y < sidelength
     end
     return {create = noop, reload = noop, get = get, output = "bool"}
 end
@@ -262,7 +266,7 @@ end
 function CircularCutoff(radius, slope)
     local function get(x, y)
         local r = math.sqrt(x * x + y * y)
-        return math.min(0, (radius - r) / slope)
+        return math.max(0, (radius - r) / slope)
     end
     return {create = noop, reload = noop, get = get, output = 'height'}
 end
@@ -277,6 +281,8 @@ function Moat(r1, r2, depth)
         local r = math.sqrt(x * x + y * y)
         if (r1 < r) and (r < r2) then
             return math.abs(r - rmid) * slope - depth
+        else
+            return 0
         end
     end
     return {create = noop, reload = noop, get = get, output = 'height'}

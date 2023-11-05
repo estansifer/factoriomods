@@ -7,8 +7,8 @@ local function write(data, zoom)
     local seed = game.default_map_gen_settings.seed
     -- local o = outfile .. ' ' .. tostring(seed)
     game.write_file(outfile, tostring(width) .. ' ' .. tostring(height) .. ' '
-        .. tostring(zoom) .. ' ' .. global.settings['pattern-preset'] .. ' ' ..
-        tostring(seed) .. '\n', true)
+        .. tostring(zoom) .. ' ' .. tostring(seed) .. ' ' ..
+        global.settings['pattern-preset'] .. '\n', true)
     local stuff = {}
     for row = 1, height do
         for col = 1, width do
@@ -25,11 +25,12 @@ function takescreenshot(get_tile, zoom)
     local code = {}
     local code_nil = '0'
     code['water-shallow'] = '1'
-    code['water'] = '2'
-    code['deepwater'] = '3'
-    code['water-green'] = '2'
-    code['deepwater-green'] = '3'
-    code['out-of-map'] = '4'
+    code['water-mud'] = '2'
+    code['water'] = '3'
+    code['deepwater'] = '4'
+    code['water-green'] = '3'
+    code['deepwater-green'] = '4'
+    code['out-of-map'] = '5'
 
     local data = {}
     for row = 1, height do

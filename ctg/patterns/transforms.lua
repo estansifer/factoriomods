@@ -90,7 +90,7 @@ function Or(...)
     local n = select('#', ...)
     local patterns = {...}
     if n == 0 then
-        return False
+        return False()
     elseif n == 1 then
         return patterns[1]
     end
@@ -356,8 +356,38 @@ function Affine(pattern, a, b, c, d, dx, dy)
         get = get, output = pattern.output}
 end
 
+function Mirrorx(pattern)
+    local pget = pattern.get
+
+    local function get(x, y)
+        if x >= 0 then
+            return pget(x, y)
+        else
+            return pget(-x, y)
+        end
+    end
+
+    return {create = pattern.create, reload = pattern.reload,
+        get = get, output = pattern.output}
+end
+
+function Mirrory(pattern)
+    local pget = pattern.get
+
+    local function get(x, y)
+        if y >= 0 then
+            return pget(x, y)
+        else
+            return pget(x, -y)
+        end
+    end
+
+    return {create = pattern.create, reload = pattern.reload,
+        get = get, output = pattern.output}
+end
+
 -- Tiles the plane with the contents of the given pattern from [xlow, xhigh) x [ylow, yhigh)
-function Tile(pattern, xhigh, yhigh, xlow, ylow)
+function Repeat(pattern, xhigh, yhigh, xlow, ylow)
     local pget = pattern.get
     yhigh = yhigh or xhigh
     xlow = xlow or 0
@@ -373,7 +403,7 @@ function Tile(pattern, xhigh, yhigh, xlow, ylow)
         get = get, output = pattern.output}
 end
 
-function Tilex(pattern, xhigh, xlow)
+function Repeatx(pattern, xhigh, xlow)
     local pget = pattern.get
     xlow = xlow or 0
     local dx = xhigh - xlow
@@ -386,7 +416,7 @@ function Tilex(pattern, xhigh, xlow)
         get = get, output = pattern.output}
 end
 
-function Tiley(pattern, yhigh, ylow)
+function Repeaty(pattern, yhigh, ylow)
     local pget = pattern.get
     ylow = ylow or 0
     local dy = yhigh - ylow

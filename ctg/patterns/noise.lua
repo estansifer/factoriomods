@@ -216,11 +216,11 @@ function Noise(options)
 
     if options.start_beach == true then
         if options.zero_percentile == nil then
-            options.start_above_area = 0.5
-            options.start_below_area = 0.55
+            options.start_above_area = 0.53
+            options.start_below_area = 0.58
         else
-            options.start_above_area = math.min(options.zero_percentile, 0.97)
-            options.start_below_area = math.min(options.zero_percentile + 0.05, 0.99)
+            options.start_above_area = math.min(options.zero_percentile + 0.03, 0.97)
+            options.start_below_area = math.min(options.zero_percentile + 0.08, 0.99)
             -- print('A', options.start_below_area, options.start_above_area)
         end
     end

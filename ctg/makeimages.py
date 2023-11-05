@@ -4,14 +4,20 @@ import imageio
 infile = 'rawtext'
 outfile = 'map_{:03d}{}_{}.png'
 
-#
-# 0     land
-# 1     water
-# 2     deepwater
-# 3     void
-#
+# local code_nil = '0'
+# code['water-shallow'] = '1'
+# code['water-mud'] = '2'
+# code['water'] = '3'
+# code['deepwater'] = '4'
+# code['water-green'] = '3'
+# code['deepwater-green'] = '4'
+# code['out-of-map'] = '5'
 colors = [
             np.array([206, 169, 52], dtype = np.uint8),
+            np.array([128, 148, 238], dtype = np.uint8),
+            np.array([64, 94, 229], dtype = np.uint8),
+            np.array([0, 40, 220], dtype = np.uint8),
+            np.array([0, 20, 140], dtype = np.uint8),
             np.array([0, 40, 220], dtype = np.uint8),
             np.array([0, 20, 140], dtype = np.uint8),
             np.array([0, 0, 0], dtype = np.uint8)
@@ -58,11 +64,12 @@ def process_data():
         while True:
             header = f.readline().strip()
             if len(header) > 0:
-                pieces = header.split(maxsplit=3)
+                pieces = header.split(maxsplit=4)
                 width = int(pieces[0])
                 height = int(pieces[1])
                 zoom = float(pieces[2])
-                name = pieces[3]
+                seed = int(pieces[3])
+                name = pieces[4]
 
                 data = []
                 for row in range(height):
