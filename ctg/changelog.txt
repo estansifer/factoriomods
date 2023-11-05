@@ -1,0 +1,148 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.5.0
+Date: 2023-11-04
+  Changes:
+    - Updated for Factorio 1.1
+    - Added height fields and support for mud / shallow ater
+    - Added Hilbert, WorldMap, Sierpinski patterns
+    - Added Maze4
+    - Added Mirrorx, Mirrory
+    - Added constants True, False, Land, ShallowishWater, ShallowWater,
+    - Water, DeepWater, Void, One, Zero, Constant
+    - Added LuaExpr for easier custom patterns
+    - Added more options to Halfplane and Quarterplane
+    - Added CircularCutoff and Moat height fields
+    - Added If
+    - Added Sum, Product, Subtract
+    - Added Clip, Max, Min, Or, And
+    - Added HF
+    - minor tweaks in existing patterns
+    - Added changelog
+    - Renamed Tile to Repeat, and similarly Tilex, Tiley
+    - new presets
+    - many small changes
+---------------------------------------------------------------------------------------------------
+Version: 0.4.4
+Date: 2020-02-02
+  Changes:
+    - Updated for Factorio 0.18
+---------------------------------------------------------------------------------------------------
+Version: 0.4.3
+  Bugfixes:
+    - Fixed bug in Maze1; thanks moldj for the detailed bug report.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.2
+  Bugfixes:
+    - No change except for a specific save file.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.1
+  Changes:
+    - Fixed bug in the variables v1 - v8 not working for custom patterns.
+    - Slightly tweaked behavior of Cross, Strip, Comb, Grid, and Checkerboard, resolving
+      problem with Cross and Strip only generating odd widths.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+  Changes:
+    - Updated for Factorio 0.17
+    - It is now possible to set a seed so that you can produce the same terrain on different playthroughs.
+    - All patterns except JigsawIslands have been adjusted so that terrain generation no longer
+      depends on what order you explore the terrain in.
+    - Screenshotting bugfix.
+    - Fixed artifact in Zoom(RectGrid(), z) when the zoom level is a power of two; thanks
+      fessoric for the bug report.
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+  Features:
+    - Simplified the mod settings so that water and void generation are combined into one setting.
+      This makes setting up a map with no void slightly more streamlined, and also allows for the
+      possibility of patterns that entangle the generation of water and void.
+    - Tweaked some of the suggested preset maps, particularly the "natural" maps
+    - Added the option to preserve Factorio's normal water generation, say for use with void maps.
+    - Added internal support for future planned features
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+  Bugfixes:
+    - Fixed bug in Maze3 / RandGrid; thanks Kent2007 for reporting the bug.
+    - Fixed misleading statement in README and warning message.
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+  Changes:
+    - Updated for Factorio 0.16 (skipping 0.15)
+    - Rewrote all core code
+    - Got rid of deep magic for storing mod settings on per-save basis. As of Factorio 0.15,
+      this was no longer necessary: now using ordinary magic.
+    - Now uses Factorio's built-in mod settings support
+    - Settings include a variety of suggested patterns, and ability to make custom patterns.
+    - Support for voids
+    - Now warns if mod added after beginning of game
+    - Added option to start the game with a chest of landfill
+    - Created Noise, NoiseExponent, and NoiseCustom patterns, which create natural-looking landforms
+    - Created Fractal pattern, which creates fractals of arbitrary dimensions from 1 to 2
+    - Created ConcentricBarcode pattern, for random concentric circles of different thicknesses
+    - Created RectSpiral pattern
+    - Created Tilex and Tiley transforms
+    - Small improvements to JaggedIslands pattern
+    - Optimized Maze3 and Mandelbrot patterns
+    - Fixed bug in Tile pattern when not tiling from origin
+    - Fixed bug in saving of Union (and Intersection) if taking the union of a non-stateful pattern
+      with a stateful pattern, in that order.
+    - Many smaller changes
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+  Features:
+    - Union and Intersection take any number of arguments instead of just two.
+    - Fixed bug in AllWater, thanks sintri on the forums for being the first person to find a bug.
+    - Added Rectangle pattern and changed Circle to take an optional center argument.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+  Features:
+    - Added Distort, Jitter, Checkerboard, AllLand, AllWater, Rotate,
+    - Affine, Tile, AngularRepeat, Invert, Smooth, KroneckerProduct,
+    - IslandifyCircles, SquaresAndBridges, and CirclesAndBridges patterns.
+    - Multiple backwards incompatible changes.
+    - Made compatible with Factorissimo.
+    - Fixed bug in loading games saved with JaggedIslands with non-default land ratio.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.9
+  Changes:
+    - Updated for Factorio 0.14.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.8
+  Changes:
+    - Updated for Factorio 0.13.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.7
+  Features:
+    - Added Mandelbrot, JaggedIslands, and Barcode patterns.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.6
+  Changes:
+    - Partial re-write.
+    - Moved configuration to `config.lua`.
+    - Added several new patterns, including Spiral and Islandify.
+    - Most patterns renamed more sensibly.
+    - Total overhaul of saving and loading to address earlier limitations that made it impossible to load a game saved with certain especially complicated patterns.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.5
+  Bugfixes:
+    - Removed dependency and fixed the version in info.json
+---------------------------------------------------------------------------------------------------
+Version: 0.0.4
+  Features:
+    - Rewrote islands pattern again to align it with railroad tracks in case of path width of 2.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+  Bugfixes:
+    - `big_scans` option in multiplayer
+---------------------------------------------------------------------------------------------------
+Version: 0.0.2
+  Features:
+    - Improved islands pattern
+    - added no water option
+    - added half and quarter plane options,
+    - added translate filter
+---------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Date: 2016-03-15
+  Changes:
+    - Initial release for Factorio 0.12
