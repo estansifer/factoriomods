@@ -51,7 +51,7 @@ local function on_init(event)
     end
 
     if (game.tick > 1 or global.settings ~= nil) then
-        if settings.startup['ctg-remove-default-water'].value then
+        if not settings.startup['ctg-use-default-water'].value then
             warn("This mod should not be enabled when loading a save that did not initially use " ..
                 "use it. No more water will be generated on this map!")
         else

@@ -1,18 +1,14 @@
 # Custom Terrain Generation
 
-a [Factorio](http://factorio.com) mod by Eric Stansifer
-
-Hosted at `https://github.com/estansifer/factoriomods/`
-
 This mod is a customizable, algebraic terrain generator that alters the distribution of
 land, water, and void cells at the start of a new game.
 
 A wide variety of terrain generation algorithms are included, as well as the ability
 to combine them in many ways or write your own algorithm.
 
- * Version 0.5.0
+ * Version 0.5.2
  * Initial release: 2016-03-15
- * Current release: 2023-11-04
+ * Current release: 2023-12-22
 
 ## Important notes
 
@@ -483,8 +479,6 @@ Clip(pattern, low, high) clips the specified height field to a range of heights 
  does better at accomplishing roughly the same goal.
 
  * World map found at https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Perlshaper_Winkel-Tripel_example1.svg/2560px-Perlshaper_Winkel-Tripel_example1.svg.png
-
-## Historical Note
 
 ## Known Issues
 
